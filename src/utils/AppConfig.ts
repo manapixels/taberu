@@ -1,7 +1,7 @@
 export const AppConfig = {
-   site_name: 'basepay',
+   site_name: 'BasePay',
    url: 'https://basepay.com',
-   title: 'basepay',
+   title: 'BasePay',
    description: '',
    type: 'website',
    locale: 'en',
