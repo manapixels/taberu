@@ -13,7 +13,7 @@ import { WagmiConfig, configureChains, createConfig } from 'wagmi'
 
 import Head from 'next/head'
 import { AppConfig } from '@/utils/AppConfig'
-import Sidebar from '@/components/Sidebar'
+import Header from '@/components/Header'
 import { AccountsContextProvider } from '@/contexts/accountsContext'
 
 import '@/styles/globals.scss'
@@ -159,23 +159,10 @@ export default function App({ Component, pageProps }: AppProps) {
                         content="width=device-width, initial-scale=1"
                      />
                   </Head>
-                  <Flex style={inter.style} background="lightgray.100">
+                  <Box style={inter.style} background="lightgray.100">
+
+                        <Header/>
                      <Box
-                        px={{ base: 4, md: 8 }}
-                        py={{ base: 4, md: 8 }}
-                        background="white"
-                        h={{ base: 'auto', md: '100vh' }}
-                        borderRightWidth={{ base: 0, md: 1 }}
-                        borderColor="lightgray.300"
-                        flex={{
-                           base: '0 0 100%',
-                           md: '0 0 200px',
-                        }}
-                     >
-                        <Sidebar />
-                     </Box>
-                     <Box
-                        h={{ base: 'auto', md: '100vh' }}
                         mt={{ base: 24, md: 0 }}
                         overflow="auto"
                         background="lightgray.100"
@@ -184,7 +171,7 @@ export default function App({ Component, pageProps }: AppProps) {
                      >
                         <Component {...pageProps} />
                      </Box>
-                  </Flex>
+                  </Box>
                </QueryClientProvider>
             </AccountsContextProvider>
          </ChakraProvider>

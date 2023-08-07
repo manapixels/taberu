@@ -1,6 +1,20 @@
 {
    "id": "STAR",
    "name": "Starbucks",
+   "tags": [
+      {
+         "id": 1,
+         "name": "Coffee & Tea"
+      },
+      {
+         "id": 2,
+         "name": "Bakery & Cake"
+      },
+      {
+         "id": 3,
+         "name": "Drinks & Beverages"
+      }
+   ],
    "menu": [
       {
          "category": "BLACKPINK",
