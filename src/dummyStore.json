@@ -20,7 +20,7 @@
          "category": "BLACKPINK",
          "items": [
             {
-               "id": "00ff9313",
+               "id": "656c6cee",
                "name": "BLACKPINK Strawberry Choco Cream Frappuccino®",
                "description": "A blend of strawberry syrup and dark chocolate sauce, with oatmilk and chocolate curls. Drink is served without whipped cream. BLACKPINK heart-shaped chocolate topper packed separately.",
                "price": 8.9
@@ -37,51 +37,61 @@
          "category": "Plant-Based Drink",
          "items": [
             {
+               "id": "24118e34",
                "name": "Oatmilk Pure Matcha Cream Frappuccino®",
                "description": "A refreshing blend of pure matcha green tea, oatmilk and ice - the perfect midday treat. Drinks are served without whipped cream.",
                "price": 8.9
             },
             {
+               "id": "e21ae48b",
                "name": "Soymilk Java Chip Frappuccino®",
                "description": "Coffee with rich mocha-flavored sauce is blended with soymilk, chocolate chips and ice to bring you endless java joy. Drinks are served without whipped cream.",
                "price": 9.2
             },
             {
+               "id": "05d1de79",
                "name": "Oatmilk Latte Extra Shot",
                "description": "Rich, full-bodied espresso with a non-dairy milk option, serving up a deliciously smooth cuppa.",
                "price": 9.0
             },
             {
+               "id": "fa93b1a0",
                "name": "Iced Oatmilk Latte Extra Shot",
                "description": "Rich, full-bodied espresso with oatmilk, serving up a deliciously smooth cuppa.",
                "price": 9.0
             },
             {
+               "id": "d21beb72",
                "name": "Almondmilk Mocha Frappuccino®",
                "description": "Mocha sauce, Frappuccino® roast coffee, almondmilk and ice all come together for a mocha flavor that'll leave you wanting more. Drinks are served without whipped cream.",
                "price": 8.6
             },
             {
+               "id": "88787533",
                "name": "Almondmilk Flat White",
                "description": "Bold shots of espresso get the perfect amount of steamed almondmilk to create a not too strong, not too creamy, just right flavor.",
                "price": 9.0
             },
             {
+               "id": "3b44b7ba",
                "name": "Iced Soymilk Caffè Mocha",
                "description": "We combine our rich, full-bodied espresso with bittersweet mocha sauce, soymilk and ice. The classic coffee drink to satisfy your sweet tooth. Drinks are served without whipped cream.",
                "price": 8.9
             },
             {
+               "id": "f113893b",
                "name": "Soymilk Caffè Mocha",
                "description": "Our rich, full-bodied espresso combined with bittersweet mocha sauce and steamed soymilk. The classic coffee drink that always sweetly satisfies.  Drinks are served without whipped cream.",
                "price": 8.9
             },
             {
+               "id": "5597c02a",
                "name": "Iced Oatmilk Cocoa Macchiato",
                "description": "Signature espresso perfectly blended with smooth oatmilk and mocha sauce, then topped with a drizzle of rich cocoa sauce for layers of flavor in every sip - served over ice.",
                "price": 8.2
             },
             {
+               "id": "3b21a4ea",
                "name": "Oatmilk Cocoa Macchiato",
                "description": "Signature espresso perfectly blended with smooth oatmilk and mocha sauce, then topped with a drizzle of rich cocoa sauce for layers of flavor in every sip.",
                "price": 8.2
@@ -92,6 +102,7 @@
          "category": "Brewed Coffee",
          "items": [
             {
+               "id": "0752efdb",
                "name": "Freshly Brewed Coffee",
                "description": "Enjoy our rich, flavorful brewed coffees any time of the day. Easy-drinking on its own and delicious with milk and sugar.",
                "price": 4.4
@@ -102,51 +113,61 @@
          "category": "Espresso",
          "items": [
             {
+               "id": "2da9ecbb",
                "name": "Iced Latte Extra Shot",
                "description": "Our dark, rich espresso is combined with milk and served over ice. This is the original coffeehouse classic with an extra shot of tasty espresso.",
                "price": 7.9
             },
             {
+               "id": "4626e267",
                "name": "Iced Caramel Macchiato",
                "description": "Cold milk with vanilla-flavored syrup is marked with espresso and topped with caramel drizzle for an oh-so-sweet finish.",
                "price": 7.9
             },
             {
+               "id": "4c282cb8",
                "name": "Iced Caffè Americano",
                "description": "Espresso shots are topped with water, then served over ice. The result is this wonderfully rich cup with depth and nuance.",
                "price": 5.7
             },
             {
+               "id": "6b5399e7",
                "name": "Caffè Latte",
                "description": "Our dark, rich espresso balanced with steamed milk and a light layer of foam. A perfect milk forward warm up.",
                "price": 7.1
             },
             {
+               "id": "9d109fcb",
                "name": "Iced Caffè Latte",
                "description": "Our dark, rich espresso is combined with milk and served over ice. A perfect milk-forward cool down.",
                "price": 7.1
             },
             {
+               "id": "111e1476",
                "name": "Latte Extra Shot",
                "description": "Rich, full-bodied espresso in steamed milk, lightly topped with foam. This is the original coffeehouse classic with an extra shot of tasty espresso.",
                "price": 7.9
             },
             {
+               "id": "05d1de79",
                "name": "Oatmilk Latte Extra Shot",
                "description": "Rich, full-bodied espresso with a non-dairy milk option, serving up a deliciously smooth cuppa.",
                "price": 9.0
             },
             {
+               "id": "fa93b1a0",
                "name": "Iced Oatmilk Latte Extra Shot",
                "description": "Rich, full-bodied espresso with oatmilk, serving up a deliciously smooth cuppa.",
                "price": 9.0
             },
             {
+               "id": "1cc1f8d2",
                "name": "Vanilla Latte",
                "description": "Rich, full-bodied espresso blended with creamy steamed milk and vanilla syrup.",
                "price": 7.8
             },
             {
+               "id": "b090d1f2",
                "name": "Flat White",
                "description": "Bold shots of espresso get the perfect amount of steamed whole milk to create a not too strong, not too creamy, just right flavor.",
                "price": 7.9
