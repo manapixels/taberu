@@ -21,7 +21,7 @@ export default function StorePage() {
                      separator={<ArrowRight size="10" />}
                   >
                      <BreadcrumbItem>
-                        <BreadcrumbLink href="/">Stores</BreadcrumbLink>
+                        <BreadcrumbLink href="/stores">Stores</BreadcrumbLink>
                      </BreadcrumbItem>
 
                      <BreadcrumbItem isCurrentPage>

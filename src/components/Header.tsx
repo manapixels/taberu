@@ -21,9 +21,9 @@ import Image from 'next/image'
 import NextLink from 'next/link'
 import { useAccount, useConnect, useDisconnect } from 'wagmi'
 import { InjectedConnector } from 'wagmi/connectors/injected'
-import { BsArrowUpRight } from 'react-icons/bs'
 import { chakraComponents, Select } from 'chakra-react-select'
 import { chains } from '@/constants/chains'
+import ConnectWallet from '@/components/ConnectWallet/ConnectWallet'
 
 const chainOptions = chains && [
    ...Object.keys(chains).map((chainId: any) => ({
@@ -89,77 +89,8 @@ const Sidebar = () => {
                         />
                      </NextLink>
                   </Box>
-                  {/* <Stack
-                     textAlign="left"
-                     direction={{ base: 'row', md: 'column' }}
-                  >
-                     <Flex
-                        as={ActiveLink}
-                        href="/stores"
-                        activeClassName="active"
-                        p={2}
-                        fontSize="sm"
-                        borderRadius="md"
-                        _hover={{
-                           background: 'lightgray.300',
-                        }}
-                     >
-                        <StopCircle
-                           stroke="var(--chakra-colors-lightgray-700)"
-                           size={18}
-                           style={{ marginRight: '.6rem' }}
-                        />
-                        Stores
-                     </Flex>
-                  </Stack> */}
                </HStack>
-               <Box>
-                  {isConnected ? (
-                     <Menu>
-                        <MenuButton
-                           as={Button}
-                           rightIcon={<ChevronDown size={15} />}
-                           w="100%"
-                           px={3}
-                           py={2}
-                           mb={3}
-                           height="auto"
-                           borderRadius="md"
-                           background="lightgray.200"
-                           fontSize="sm"
-                           textAlign="left"
-                           borderColor="darkgray.100"
-                        >
-                           <Flex alignItems="center">
-                              <Box
-                                 width={7}
-                                 height={7}
-                                 background="lightgray.400"
-                                 borderRadius="md"
-                                 mr={2}
-                              ></Box>
-                              <Box>
-                                 <Box>{address}</Box>
-                              </Box>
-                           </Flex>
-                        </MenuButton>
-                        <MenuList>
-                           <MenuItem onClick={() => disconnect()}>
-                              Disconnect
-                           </MenuItem>
-                        </MenuList>
-                     </Menu>
-                  ) : (
-                     <Button
-                        variant="outline"
-                        fontSize="sm"
-                        w="100%"
-                        onClick={() => connect()}
-                     >
-                        Connect Wallet
-                     </Button>
-                  )}
-               </Box>
+               <ConnectWallet />
             </Flex>
          </Container>
       </Box>
