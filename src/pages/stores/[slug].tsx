@@ -1,13 +1,72 @@
-import { Box, Breadcrumb, BreadcrumbItem, BreadcrumbLink, Button, Container, Flex, HStack, Heading, Image, RadioGroup, Tag, Text, Radio } from '@chakra-ui/react'
+import {
+   Box,
+   Breadcrumb,
+   BreadcrumbItem,
+   BreadcrumbLink,
+   Button,
+   Container,
+   Flex,
+   HStack,
+   Heading,
+   Image,
+   RadioGroup,
+   Tag,
+   Text,
+   Radio,
+   useDisclosure,
+   // Drawer,
+   // DrawerOverlay,
+   // DrawerContent,
+   // DrawerCloseButton,
+   // DrawerHeader,
+   // DrawerBody,
+   // DrawerFooter,
+} from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import data from '../../dummyStore.json'
 import { ArrowRight } from 'react-feather'
 import { useState } from 'react'
+import { OrderItem } from '@/types/OrderItem'
+import { OrderCart } from '@/types/OrderCart'
 
 export default function StorePage() {
-
    const router = useRouter()
-   const [orderType, setOrderType] = useState<string>("dine-in")
+   const [orderType, setOrderType] = useState<string>('dine-in')
+   const [cart, setCart] = useState<OrderCart>([])
+   // const [selectedItem, setSelectedItem] = useState<OrderItem>()
+   // const { isOpen, onOpen, onClose } = useDisclosure()
+
+   const addItem = (_item: OrderItem) => {
+      // if cart is empty
+      if (cart === undefined || cart.length === 0) {
+         setCart([
+            {
+               item: _item,
+               quantity: 1,
+            },
+         ])
+      } else {
+         const i = cart?.findIndex((i) => i?.item?.id === _item?.id)
+         // if item does not exist in cart
+         if (i === -1) {
+            setCart((current) => [
+               ...current,
+               {
+                  item: _item,
+                  quantity: 1,
+               },
+            ])
+         }
+         // if item already exists in cart
+         else {
+            let newArray = [...cart]
+            newArray[i] = {
+               ...newArray[i],
+               quantity: newArray[i].quantity + 1,
+            }
+         }
+      }
+   }
 
    return (
       <Box>
@@ -102,7 +161,7 @@ export default function StorePage() {
                         {category.category}
                      </Heading>
                      <Flex p="4" wrap="wrap" mx={-3}>
-                        {category.items.map((item, j) => (
+                        {category.items.map((item: OrderItem, j) => (
                            <Flex p={3} width={{ base: '100%', lg: '33.33%' }}>
                               <Flex
                                  p={4}
@@ -113,6 +172,11 @@ export default function StorePage() {
                                     cursor: 'pointer',
                                  }}
                                  border="2px solid transparent"
+                                 onClick={() => {
+                                    // onOpen()
+                                    // setSelectedItem(item)
+                                    addItem(item)
+                                 }}
                               >
                                  {item.id ? (
                                     <Image
@@ -171,6 +235,70 @@ export default function StorePage() {
                   </Box>
                ))}
             </Container>
+            {/* <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
+               <DrawerOverlay />
+               <DrawerContent>
+                  <DrawerCloseButton />
+                  <DrawerHeader>Create your account</DrawerHeader>
+
+                  <DrawerBody>
+                     {selectedItem?.id ? (
+                        <Image
+                           src={`/starbucks/${selectedItem?.id}.webp`}
+                           width="28"
+                           height="28"
+                           flex="0 0 var(--chakra-sizes-28)"
+                           background="lightgray.200"
+                           borderRadius="md"
+                           mr={3}
+                        />
+                     ) : (
+                        <Box
+                           width="28"
+                           height="28"
+                           flex="0 0 var(--chakra-sizes-28)"
+                           background="lightgray.200"
+                           borderRadius="md"
+                           mr={3}
+                        ></Box>
+                     )}
+                     <Flex flexDirection="column">
+                        <Heading
+                           size="sm"
+                           fontWeight="600"
+                           fontSize="md"
+                           pb={2}
+                        >
+                           {selectedItem?.name}
+                        </Heading>
+                        <Box
+                           color="darkgray.100"
+                           fontSize="sm"
+                           lineHeight="1.5"
+                           flex="1"
+                           mb={4}
+                        >
+                           <Text noOfLines={4} title={selectedItem?.description}>
+                              {selectedItem?.description}
+                           </Text>
+                        </Box>
+                        <Box>
+                           <HStack>
+                              <Box mr={1}>$</Box>
+                              <Box>{selectedItem?.price.toFixed(2)}</Box>
+                           </HStack>
+                        </Box>
+                     </Flex>
+                  </DrawerBody>
+
+                  <DrawerFooter>
+                     <Button variant="outline" mr={3} onClick={onClose}>
+                        Cancel
+                     </Button>
+                     <Button colorScheme="blue">Save</Button>
+                  </DrawerFooter>
+               </DrawerContent>
+            </Drawer> */}
          </Box>
       </Box>
    )
