@@ -3,7 +3,7 @@ export type OrderItem = {
    name: string
    description: string
    price: number
-   options: [
+   options?: [
       {
          name: string
          options: [
