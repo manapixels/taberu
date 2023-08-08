@@ -22,7 +22,6 @@ import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
 import { InjectedConnector } from 'wagmi/connectors/injected'
 
-
 /*  =====================
    Set up WAGMI
 =========================
@@ -49,9 +48,16 @@ const config = createConfig({
 const theme = extendTheme(
    {
       colors: {
-         sui: {
-            100: '#6fbcf0',
-            200: '#4CA2FF',
+         primary: {
+            100: '#CCE1FF',
+            200: '#99C3FF',
+            300: '#66A5FF',
+            400: '#3388FF',
+            500: '#0052FF',
+            600: '#0047CC',
+            700: '#003999',
+            800: '#002B66',
+            900: '#001E33',
          },
          lightgray: {
             100: '#FAFAFB',
@@ -102,6 +108,18 @@ const theme = extendTheme(
                      boxShadow: 'none',
                      _disabled: {
                         bg: 'darkgray.900',
+                     },
+                  },
+               },
+               primary: {
+                  bg: 'primary.500',
+                  color: 'white',
+                  _hover: {
+                     bg: 'primary.900',
+                     borderColor: 'primary',
+                     boxShadow: 'none',
+                     _disabled: {
+                        bg: 'primary.900',
                      },
                   },
                },
@@ -160,8 +178,7 @@ export default function App({ Component, pageProps }: AppProps) {
                      />
                   </Head>
                   <Box style={inter.style} background="lightgray.100">
-
-                        <Header/>
+                     <Header />
                      <Box
                         mt={{ base: 24, md: 0 }}
                         overflow="auto"

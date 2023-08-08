@@ -1,7 +1,7 @@
 export const AppConfig = {
-   site_name: 'BasePay',
-   url: 'https://basepay.com',
-   title: 'BasePay',
+   site_name: 'Taberu',
+   url: 'https://taberu.app',
+   title: 'Taberu',
    description: '',
    type: 'website',
    locale: 'en',

@@ -1,11 +1,13 @@
-import { Box, Breadcrumb, BreadcrumbItem, BreadcrumbLink, Button, Container, Flex, HStack, Heading, Tag } from '@chakra-ui/react'
+import { Box, Breadcrumb, BreadcrumbItem, BreadcrumbLink, Button, Container, Flex, HStack, Heading, Image, RadioGroup, Tag, Text, Radio } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import data from '../../dummyStore.json'
 import { ArrowRight } from 'react-feather'
+import { useState } from 'react'
 
 export default function StorePage() {
 
    const router = useRouter()
+   const [orderType, setOrderType] = useState<string>("dine-in")
 
    return (
       <Box>
@@ -29,11 +31,11 @@ export default function StorePage() {
                      </BreadcrumbItem>
                   </Breadcrumb>
                </Box>
-               <Heading size="lg" pb={4} pt={2}>
+               <Heading size="xl" pb={4} pt={2}>
                   {data.name}
                </Heading>
                {data.tags && (
-                  <Box>
+                  <HStack mb={3} spacing={2}>
                      {data.tags.map((tag, i) => (
                         <Tag
                            key={`tag-${tag.name}`}
@@ -44,8 +46,52 @@ export default function StorePage() {
                            {tag.name}
                         </Tag>
                      ))}
-                  </Box>
+                  </HStack>
                )}
+               <Box>
+                  <RadioGroup
+                     defaultValue="dine-in"
+                     borderWidth={1}
+                     borderColor="lightgray.600"
+                     borderRadius="md"
+                     padding={1}
+                     width="fit-content"
+                  >
+                     <Button
+                        mr={3}
+                        colorScheme={
+                           orderType === 'dine-in' ? 'primary' : 'gray'
+                        }
+                        onClick={() => setOrderType('dine-in')}
+                     >
+                        <Radio
+                           value="Dine-in"
+                           w="100%"
+                           h="100%"
+                           bg="white"
+                           _checked={{ bg: 'primary.700' }}
+                        >
+                           Dine-in
+                        </Radio>
+                     </Button>
+                     <Button
+                        colorScheme={
+                           orderType === 'takeaway' ? 'primary' : 'gray'
+                        }
+                        onClick={() => setOrderType('takeaway')}
+                     >
+                        <Radio
+                           value="Takeaway"
+                           w="100%"
+                           h="100%"
+                           bg="white"
+                           _checked={{ bg: 'primary.700' }}
+                        >
+                           Takeaway
+                        </Radio>
+                     </Button>
+                  </RadioGroup>
+               </Box>
             </Container>
          </Box>
          <Box>
@@ -57,14 +103,9 @@ export default function StorePage() {
                      </Heading>
                      <Flex p="4" wrap="wrap" mx={-3}>
                         {category.items.map((item, j) => (
-                           <Flex
-                              p="4"
-                              width={{ base: '100%', lg: '33.33%' }}
-                              px={3}
-                           >
+                           <Flex p={3} width={{ base: '100%', lg: '33.33%' }}>
                               <Flex
                                  p={4}
-                                 mt={2}
                                  background="white"
                                  borderRadius="md"
                                  _hover={{
@@ -73,14 +114,26 @@ export default function StorePage() {
                                  }}
                                  border="2px solid transparent"
                               >
-                                 <Box
-                                    width="28"
-                                    height="28"
-                                    flex="0 0 var(--chakra-sizes-28)"
-                                    background="lightgray.200"
-                                    borderRadius="md"
-                                    mr={3}
-                                 ></Box>
+                                 {item.id ? (
+                                    <Image
+                                       src={`/starbucks/${item.id}.webp`}
+                                       width="28"
+                                       height="28"
+                                       flex="0 0 var(--chakra-sizes-28)"
+                                       background="lightgray.200"
+                                       borderRadius="md"
+                                       mr={3}
+                                    />
+                                 ) : (
+                                    <Box
+                                       width="28"
+                                       height="28"
+                                       flex="0 0 var(--chakra-sizes-28)"
+                                       background="lightgray.200"
+                                       borderRadius="md"
+                                       mr={3}
+                                    ></Box>
+                                 )}
                                  <Flex flexDirection="column">
                                     <Heading
                                        size="sm"
@@ -97,9 +150,19 @@ export default function StorePage() {
                                        flex="1"
                                        mb={4}
                                     >
-                                       {item.description}
+                                       <Text
+                                          noOfLines={4}
+                                          title={item.description}
+                                       >
+                                          {item.description}
+                                       </Text>
                                     </Box>
-                                    <Box>{item.price}</Box>
+                                    <Box>
+                                       <HStack>
+                                          <Box mr={1}>$</Box>
+                                          <Box>{item.price.toFixed(2)}</Box>
+                                       </HStack>
+                                    </Box>
                                  </Flex>
                               </Flex>
                            </Flex>
