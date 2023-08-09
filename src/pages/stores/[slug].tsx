@@ -14,17 +14,17 @@ import {
    Text,
    Radio,
    useDisclosure,
-   // Drawer,
-   // DrawerOverlay,
-   // DrawerContent,
-   // DrawerCloseButton,
-   // DrawerHeader,
-   // DrawerBody,
-   // DrawerFooter,
+   Drawer,
+   DrawerOverlay,
+   DrawerContent,
+   DrawerCloseButton,
+   DrawerHeader,
+   DrawerBody,
+   DrawerFooter,
 } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import data from '../../dummyStore.json'
-import { ArrowRight } from 'react-feather'
+import { ArrowRight, Plus, ShoppingBag } from 'react-feather'
 import { useState } from 'react'
 import { OrderItem } from '@/types/OrderItem'
 import { OrderCart } from '@/types/OrderCart'
@@ -33,8 +33,7 @@ export default function StorePage() {
    const router = useRouter()
    const [orderType, setOrderType] = useState<string>('dine-in')
    const [cart, setCart] = useState<OrderCart>([])
-   // const [selectedItem, setSelectedItem] = useState<OrderItem>()
-   // const { isOpen, onOpen, onClose } = useDisclosure()
+   const { isOpen, onOpen, onClose } = useDisclosure()
 
    const addItem = (_item: OrderItem) => {
       // if cart is empty
@@ -69,7 +68,7 @@ export default function StorePage() {
    }
 
    return (
-      <Box>
+      <Box pos="relative">
          <Box background="white">
             <Container maxW="container.xl" py="10">
                <Box>
@@ -162,7 +161,11 @@ export default function StorePage() {
                      </Heading>
                      <Flex p="4" wrap="wrap" mx={-3}>
                         {category.items.map((item: OrderItem, j) => (
-                           <Flex p={3} width={{ base: '100%', lg: '33.33%' }}>
+                           <Flex
+                              p={3}
+                              width={{ base: '100%', lg: '33.33%' }}
+                              key={`item-${item.id}`}
+                           >
                               <Flex
                                  p={4}
                                  background="white"
@@ -177,6 +180,8 @@ export default function StorePage() {
                                     // setSelectedItem(item)
                                     addItem(item)
                                  }}
+                                 role="group"
+                                 pos="relative"
                               >
                                  {item.id ? (
                                     <Image
@@ -228,6 +233,18 @@ export default function StorePage() {
                                        </HStack>
                                     </Box>
                                  </Flex>
+                                 <Box
+                                    opacity={0}
+                                    borderRadius="md"
+                                    background="primary.500"
+                                    pos="absolute"
+                                    bottom={4}
+                                    right={4}
+                                    _groupHover={{ opacity: '1' }}
+                                    p={2}
+                                 >
+                                    <Plus color="white" />
+                                 </Box>
                               </Flex>
                            </Flex>
                         ))}
@@ -235,71 +252,138 @@ export default function StorePage() {
                   </Box>
                ))}
             </Container>
-            {/* <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
+            <Drawer
+               isOpen={isOpen}
+               placement="right"
+               onClose={onClose}
+               size="sm"
+            >
                <DrawerOverlay />
-               <DrawerContent>
+               <DrawerContent background="lightgray.200">
                   <DrawerCloseButton />
-                  <DrawerHeader>Create your account</DrawerHeader>
+                  <DrawerHeader background="white">Order summary</DrawerHeader>
 
                   <DrawerBody>
-                     {selectedItem?.id ? (
-                        <Image
-                           src={`/starbucks/${selectedItem?.id}.webp`}
-                           width="28"
-                           height="28"
-                           flex="0 0 var(--chakra-sizes-28)"
-                           background="lightgray.200"
+                     {cart.map((item, i) => (
+                        <Flex
+                           key={`item-${item?.item?.id}`}
+                           background="white"
                            borderRadius="md"
-                           mr={3}
-                        />
-                     ) : (
-                        <Box
-                           width="28"
-                           height="28"
-                           flex="0 0 var(--chakra-sizes-28)"
-                           background="lightgray.200"
-                           borderRadius="md"
-                           mr={3}
-                        ></Box>
-                     )}
-                     <Flex flexDirection="column">
-                        <Heading
-                           size="sm"
-                           fontWeight="600"
-                           fontSize="md"
-                           pb={2}
+                           pos="relative"
+                           alignItems="center"
+                           p={2}
+                           mb={3}
                         >
-                           {selectedItem?.name}
-                        </Heading>
-                        <Box
-                           color="darkgray.100"
-                           fontSize="sm"
-                           lineHeight="1.5"
-                           flex="1"
-                           mb={4}
-                        >
-                           <Text noOfLines={4} title={selectedItem?.description}>
-                              {selectedItem?.description}
-                           </Text>
-                        </Box>
-                        <Box>
-                           <HStack>
-                              <Box mr={1}>$</Box>
-                              <Box>{selectedItem?.price.toFixed(2)}</Box>
-                           </HStack>
-                        </Box>
+                           <Flex>
+                              {item?.item?.id ? (
+                                 <Image
+                                    src={`/starbucks/${item?.item?.id}.webp`}
+                                    width="16"
+                                    height="16"
+                                    flex="0 0 var(--chakra-sizes-16)"
+                                    background="lightgray.200"
+                                    borderRadius="md"
+                                    mr={3}
+                                 />
+                              ) : (
+                                 <Box
+                                    width="16"
+                                    height="16"
+                                    flex="0 0 var(--chakra-sizes-16)"
+                                    background="lightgray.200"
+                                    borderRadius="md"
+                                    mr={3}
+                                 ></Box>
+                              )}
+                              <Heading
+                                 size="sm"
+                                 fontWeight="600"
+                                 fontSize="sm"
+                                 pb={2}
+                              >
+                                 {item?.item?.name}
+                              </Heading>
+                           </Flex>
+
+                           <Flex flex="0 0 3rem" justifyContent="center" ml={3}>
+                              <Box
+                                 background="primary.100"
+                                 color="primary.500"
+                                 width="fit-content"
+                                 borderRadius="md"
+                                 fontWeight="bold"
+                                 fontSize="sm"
+                                 px={2}
+                                 py={1}
+                              >
+                                 {item?.quantity}x
+                              </Box>
+                           </Flex>
+
+                           <Flex
+                              flex="0 0 4rem"
+                              textAlign="right"
+                              justifyContent="space-between"
+                              ml={2}
+                           >
+                              <Box mr={1} color="darkgray.100">
+                                 $
+                              </Box>
+                              <Box>{item?.item?.price.toFixed(2)}</Box>
+                           </Flex>
+                        </Flex>
+                     ))}
+                     <Flex
+                        background="white"
+                        borderRadius="md"
+                        pos="relative"
+                        alignItems="center"
+                        justifyContent="space-between"
+                        p={2}
+                        mb={3}
+                     >
+                        <Text>Total</Text>
+                        <Flex flex="0 0 4rem" justifyContent="space-between">
+                           <Box mr={1} color="darkgray.100">
+                              $
+                           </Box>
+                           <Box>
+                              {cart
+                                 .reduce((sum, curr) => {
+                                    return (
+                                       sum + curr?.quantity * curr?.item?.price
+                                    )
+                                 }, 0)
+                                 .toFixed(2)}
+                           </Box>
+                        </Flex>
                      </Flex>
                   </DrawerBody>
 
                   <DrawerFooter>
-                     <Button variant="outline" mr={3} onClick={onClose}>
-                        Cancel
+                     <Button colorScheme="primary" px={8}>
+                        Pay
                      </Button>
-                     <Button colorScheme="blue">Save</Button>
                   </DrawerFooter>
                </DrawerContent>
-            </Drawer> */}
+            </Drawer>
          </Box>
+         <Button
+            opacity={cart.length > 0 ? 1 : 0}
+            borderRadius="md"
+            background="primary.500"
+            pos="fixed"
+            bottom={4}
+            right={4}
+            p={2}
+            variant="primary"
+            onClick={() => onOpen()}
+         >
+            <HStack>
+               <ShoppingBag color="white" />
+               <Text>{cart.length}</Text>
+            </HStack>
+         </Button>
       </Box>
    )
 }
