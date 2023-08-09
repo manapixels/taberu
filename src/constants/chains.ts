@@ -1,16 +1,28 @@
 import { Chains } from "../types/Chains";
 
 export const chains : Chains = {
+   1: {
+      name: 'Ethereum',
+      logo: '/chains/ethereum.svg'
+   },
    324: {
       name: 'zksync Era',
-      logo: '/images/chains/zksync.svg',
+      logo: '/chains/zksync.svg',
    },
    42161: {
       name: 'Arbitrum',
-      logo: '/images/chains/arbitrum.svg',
+      logo: '/chains/arbitrum.svg',
    },
    10: {
       name: 'Optimism',
-      logo: '/images/chains/optimism.svg',
+      logo: '/chains/optimism.svg',
    },
+   8453: {
+      name: 'Base',
+      logo: '/chains/base.svg'
+   },
+   7777777: {
+      name: 'Zora',
+      logo: '/chains/zora.svg'
+   }
 }
