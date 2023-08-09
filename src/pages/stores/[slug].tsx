@@ -24,45 +24,59 @@ import {
 } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import data from '../../dummyStore.json'
-import { ArrowRight, Plus, ShoppingBag } from 'react-feather'
+import { ArrowRight, Minus, Plus, ShoppingBag } from 'react-feather'
 import { useState } from 'react'
-import { OrderItem } from '@/types/OrderItem'
-import { OrderCart } from '@/types/OrderCart'
+import { OrderCart, OrderItem } from '@/types/Order'
 
 export default function StorePage() {
    const router = useRouter()
    const [orderType, setOrderType] = useState<string>('dine-in')
-   const [cart, setCart] = useState<OrderCart>([])
+   const [cart, setCart] = useState<OrderCart>({})
    const { isOpen, onOpen, onClose } = useDisclosure()
 
    const addItem = (_item: OrderItem) => {
       // if cart is empty
-      if (cart === undefined || cart.length === 0) {
-         setCart([
-            {
+      if (Object.entries(cart).length === 0) {
+         setCart({
+            [_item.id]: {
                item: _item,
                quantity: 1,
             },
-         ])
+         })
       } else {
-         const i = cart?.findIndex((i) => i?.item?.id === _item?.id)
+         // if item already exists in cart
+         if (_item.id in cart) {
+            let newObj: OrderCart = JSON.parse(JSON.stringify(cart))
+            newObj[_item.id] = {
+               ...newObj[_item.id],
+               quantity: newObj[_item.id].quantity + 1,
+            }
+            setCart(newObj)
+         }
          // if item does not exist in cart
-         if (i === -1) {
-            setCart((current) => [
+         else {
+            setCart((current) => ({
                ...current,
-               {
+               [_item.id]: {
                   item: _item,
                   quantity: 1,
                },
-            ])
+            }))
          }
-         // if item already exists in cart
-         else {
-            let newArray = [...cart]
-            newArray[i] = {
-               ...newArray[i],
-               quantity: newArray[i].quantity + 1,
-            }
+      }
+   }
+
+   const removeItem = (_item: OrderItem) => {
+
+      if (_item.id in cart) {
+         let copy: OrderCart = JSON.parse(JSON.stringify(cart))
+         // if item quantity is currently 1, remove it from cart
+         if (copy[_item.id].quantity - 1 === 0) {
+            delete copy[_item.id]
+            setCart(copy)
+         } else {
+            copy[_item.id].quantity -= 1
+            setCart(copy)
          }
       }
    }
@@ -175,11 +189,7 @@ export default function StorePage() {
                                     cursor: 'pointer',
                                  }}
                                  border="2px solid transparent"
-                                 onClick={() => {
-                                    // onOpen()
-                                    // setSelectedItem(item)
-                                    addItem(item)
-                                 }}
+                                 onClick={() => !cart?.[item?.id] && addItem(item)}
                                  role="group"
                                  pos="relative"
                               >
@@ -233,18 +243,50 @@ export default function StorePage() {
                                        </HStack>
                                     </Box>
                                  </Flex>
-                                 <Box
-                                    opacity={0}
-                                    borderRadius="md"
-                                    background="primary.500"
-                                    pos="absolute"
-                                    bottom={4}
-                                    right={4}
-                                    _groupHover={{ opacity: '1' }}
-                                    p={2}
-                                 >
-                                    <Plus color="white" />
-                                 </Box>
+
+                                 {cart?.[item?.id] &&
+                                 cart[item.id].quantity > 0 ? (
+                                    <HStack
+                                       spacing={1}
+                                       borderWidth={1}
+                                       borderColor="primary.500"
+                                       pos="absolute"
+                                       bottom={4}
+                                       right={4}
+                                       borderRadius="md"
+                                       p={1}
+                                       boxShadow="0px 5px 0px 0px var(--chakra-colors-primary-500)"
+                                    >
+                                       <Button
+                                          size="sm"
+                                          onClick={() => removeItem(item)}
+                                       >
+                                          <Minus size={10} />
+                                       </Button>
+                                       <Box px={2}>
+                                          {cart?.[item?.id]?.quantity}
+                                       </Box>
+                                       <Button
+                                          size="sm"
+                                          onClick={() => addItem(item)}
+                                       >
+                                          <Plus size={10} />
+                                       </Button>
+                                    </HStack>
+                                 ) : (
+                                    <Box
+                                       opacity={0}
+                                       borderRadius="md"
+                                       background="primary.500"
+                                       pos="absolute"
+                                       bottom={4}
+                                       right={4}
+                                       _groupHover={{ opacity: '1' }}
+                                       p={2}
+                                    >
+                                       <Plus color="white" />
+                                    </Box>
+                                 )}
                               </Flex>
                            </Flex>
                         ))}
@@ -264,9 +306,9 @@ export default function StorePage() {
                   <DrawerHeader background="white">Order summary</DrawerHeader>
 
                   <DrawerBody>
-                     {cart.map((item, i) => (
+                     {Object.entries(cart).map(([itemId, itemOrder], i) => (
                         <Flex
-                           key={`item-${item?.item?.id}`}
+                           key={`item-${itemId}`}
                            background="white"
                            borderRadius="md"
                            pos="relative"
@@ -275,9 +317,9 @@ export default function StorePage() {
                            mb={3}
                         >
                            <Flex>
-                              {item?.item?.id ? (
+                              {itemOrder?.item?.id ? (
                                  <Image
-                                    src={`/starbucks/${item?.item?.id}.webp`}
+                                    src={`/starbucks/${itemOrder?.item?.id}.webp`}
                                     width="12"
                                     height="12"
                                     flex="0 0 var(--chakra-sizes-12)"
@@ -296,7 +338,7 @@ export default function StorePage() {
                                  ></Box>
                               )}
                               <Box pb={2} lineHeight={1.2}>
-                                 {item?.item?.name}
+                                 {itemOrder?.item?.name}
                               </Box>
                            </Flex>
 
@@ -311,7 +353,7 @@ export default function StorePage() {
                                  px={2}
                                  py={1}
                               >
-                                 {item?.quantity}x
+                                 {itemOrder?.quantity}x
                               </Box>
                            </Flex>
 
@@ -324,7 +366,7 @@ export default function StorePage() {
                               <Box mr={1} color="darkgray.100">
                                  $
                               </Box>
-                              <Box>{item?.item?.price.toFixed(2)}</Box>
+                              <Box>{itemOrder?.item?.price.toFixed(2)}</Box>
                            </Flex>
                         </Flex>
                      ))}
@@ -332,8 +374,15 @@ export default function StorePage() {
 
                   <DrawerFooter display="box" p={0} background="white">
                      <Box p={6}>
-                        <Heading size="sm" color="darkgray.300" fontWeight="600" mb={4}>Payment Details</Heading>
-                        
+                        <Heading
+                           size="sm"
+                           color="darkgray.300"
+                           fontWeight="600"
+                           mb={4}
+                        >
+                           Payment Details
+                        </Heading>
+
                         <Flex
                            background="white"
                            borderRadius="md"
@@ -354,7 +403,7 @@ export default function StorePage() {
                                  $
                               </Box>
                               <Box>
-                                 {cart
+                                 {Object.values(cart)
                                     .reduce((sum, curr) => {
                                        return (
                                           sum +
@@ -379,7 +428,7 @@ export default function StorePage() {
             </Drawer>
          </Box>
          <Button
-            opacity={cart.length > 0 ? 1 : 0}
+            opacity={Object.keys(cart).length > 0 ? 1 : 0}
             borderRadius="lg"
             background="primary.500"
             pos="fixed"
@@ -392,7 +441,7 @@ export default function StorePage() {
          >
             <HStack>
                <ShoppingBag color="white" size={30} />
-               <Text>{cart.length}</Text>
+               <Text>{Object.keys(cart).length}</Text>
             </HStack>
          </Button>
       </Box>
