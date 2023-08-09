@@ -106,6 +106,26 @@ a.active svg {
   display: none;
 }
 
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--chakra-colors-lightgray-300);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--chakra-colors-lightgray-900);
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--chakra-colors-lightgray-600);
+  border-radius: 6px;
+}
+
 .custom-scrollbar {
   scrollbar-width: thin;
   scrollbar-color: var(--chakra-colors-lightgray-400) #FFF;
