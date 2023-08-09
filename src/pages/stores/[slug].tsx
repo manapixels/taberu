@@ -93,7 +93,7 @@ export default function StorePage() {
                      separator={<ArrowRight size="10" />}
                   >
                      <BreadcrumbItem>
-                        <BreadcrumbLink href="/stores">Stores</BreadcrumbLink>
+                        <BreadcrumbLink>Stores</BreadcrumbLink>
                      </BreadcrumbItem>
 
                      <BreadcrumbItem isCurrentPage>
@@ -189,7 +189,9 @@ export default function StorePage() {
                                     cursor: 'pointer',
                                  }}
                                  border="2px solid transparent"
-                                 onClick={() => !cart?.[item?.id] && addItem(item)}
+                                 onClick={() =>
+                                    !cart?.[item?.id] && addItem(item)
+                                 }
                                  role="group"
                                  pos="relative"
                               >
@@ -441,7 +443,12 @@ export default function StorePage() {
          >
             <HStack>
                <ShoppingBag color="white" size={30} />
-               <Text>{Object.keys(cart).length}</Text>
+               <Text>
+                  {Object.values(cart)
+                     .reduce((totalQuantity, curr) => {
+                        return totalQuantity + curr?.quantity
+                     }, 0)}
+               </Text>
             </HStack>
          </Button>
       </Box>
