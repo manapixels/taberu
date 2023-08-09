@@ -271,38 +271,33 @@ export default function StorePage() {
                            borderRadius="md"
                            pos="relative"
                            alignItems="center"
-                           p={2}
+                           p={3}
                            mb={3}
                         >
                            <Flex>
                               {item?.item?.id ? (
                                  <Image
                                     src={`/starbucks/${item?.item?.id}.webp`}
-                                    width="16"
-                                    height="16"
-                                    flex="0 0 var(--chakra-sizes-16)"
+                                    width="12"
+                                    height="12"
+                                    flex="0 0 var(--chakra-sizes-12)"
                                     background="lightgray.200"
                                     borderRadius="md"
                                     mr={3}
                                  />
                               ) : (
                                  <Box
-                                    width="16"
-                                    height="16"
-                                    flex="0 0 var(--chakra-sizes-16)"
+                                    width="12"
+                                    height="12"
+                                    flex="0 0 var(--chakra-sizes-12)"
                                     background="lightgray.200"
                                     borderRadius="md"
                                     mr={3}
                                  ></Box>
                               )}
-                              <Heading
-                                 size="sm"
-                                 fontWeight="600"
-                                 fontSize="sm"
-                                 pb={2}
-                              >
+                              <Box pb={2} lineHeight={1.2}>
                                  {item?.item?.name}
-                              </Heading>
+                              </Box>
                            </Flex>
 
                            <Flex flex="0 0 3rem" justifyContent="center" ml={3}>
@@ -333,54 +328,70 @@ export default function StorePage() {
                            </Flex>
                         </Flex>
                      ))}
-                     <Flex
-                        background="white"
-                        borderRadius="md"
-                        pos="relative"
-                        alignItems="center"
-                        justifyContent="space-between"
-                        p={2}
-                        mb={3}
-                     >
-                        <Text>Total</Text>
-                        <Flex flex="0 0 4rem" justifyContent="space-between">
-                           <Box mr={1} color="darkgray.100">
-                              $
-                           </Box>
-                           <Box>
-                              {cart
-                                 .reduce((sum, curr) => {
-                                    return (
-                                       sum + curr?.quantity * curr?.item?.price
-                                    )
-                                 }, 0)
-                                 .toFixed(2)}
-                           </Box>
-                        </Flex>
-                     </Flex>
                   </DrawerBody>
 
-                  <DrawerFooter>
-                     <Button colorScheme="primary" px={8}>
-                        Pay
-                     </Button>
+                  <DrawerFooter display="box" p={0} background="white">
+                     <Box p={6}>
+                        <Heading size="sm" color="darkgray.300" fontWeight="600" mb={4}>Payment Details</Heading>
+                        
+                        <Flex
+                           background="white"
+                           borderRadius="md"
+                           pos="relative"
+                           alignItems="center"
+                           justifyContent="space-between"
+                           p={2}
+                           mb={3}
+                        >
+                           <Text>Total</Text>
+                           <Flex
+                              flex="0 0 4rem"
+                              justifyContent="space-between"
+                              fontSize="120%"
+                              fontWeight="bold"
+                           >
+                              <Box mr={1} color="darkgray.100">
+                                 $
+                              </Box>
+                              <Box>
+                                 {cart
+                                    .reduce((sum, curr) => {
+                                       return (
+                                          sum +
+                                          curr?.quantity * curr?.item?.price
+                                       )
+                                    }, 0)
+                                    .toFixed(2)}
+                              </Box>
+                           </Flex>
+                        </Flex>
+                        <Button
+                           colorScheme="primary"
+                           px={12}
+                           size="lg"
+                           width="100%"
+                        >
+                           Pay
+                        </Button>
+                     </Box>
                   </DrawerFooter>
                </DrawerContent>
             </Drawer>
          </Box>
          <Button
             opacity={cart.length > 0 ? 1 : 0}
-            borderRadius="md"
+            borderRadius="lg"
             background="primary.500"
             pos="fixed"
             bottom={4}
             right={4}
-            p={2}
+            p={3}
             variant="primary"
             onClick={() => onOpen()}
+            size="xl"
          >
             <HStack>
-               <ShoppingBag color="white" />
+               <ShoppingBag color="white" size={30} />
                <Text>{cart.length}</Text>
             </HStack>
          </Button>
