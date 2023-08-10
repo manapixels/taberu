@@ -1,4 +1,15 @@
-export const Contracts = {
+export type ContractsType = {
+   [key: number]: {
+      name: string
+      logo?: string
+      USDC?: string
+      USDC2?: string
+      USDT?: string
+      DAI?: string
+   }
+}
+
+export const contracts: ContractsType = {
    1: {
       name: 'Ethereum',
       logo: '/chains/ethereum.svg',

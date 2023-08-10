@@ -1,0 +1,77 @@
+[
+   {
+      "inputs": [
+         {
+            "internalType": "contract IERC20",
+            "name": "_usdc",
+            "type": "address"
+         }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+   },
+   {
+      "anonymous": false,
+      "inputs": [
+         {
+            "indexed": true,
+            "internalType": "address",
+            "name": "shop",
+            "type": "address"
+         },
+         {
+            "indexed": true,
+            "internalType": "address",
+            "name": "loyaltyProgram",
+            "type": "address"
+         }
+      ],
+      "name": "LoyaltyProgramCreated",
+      "type": "event"
+   },
+   {
+      "inputs": [
+         {
+            "internalType": "uint256",
+            "name": "_stampPrice",
+            "type": "uint256"
+         }
+      ],
+      "name": "createLoyaltyProgram",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+   },
+   {
+      "inputs": [
+         {
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+         }
+      ],
+      "name": "loyaltyPrograms",
+      "outputs": [
+         {
+            "internalType": "contract LoyaltyProgram",
+            "name": "",
+            "type": "address"
+         }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+   },
+   {
+      "inputs": [],
+      "name": "usdc",
+      "outputs": [
+         {
+            "internalType": "contract IERC20",
+            "name": "",
+            "type": "address"
+         }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+   }
+]

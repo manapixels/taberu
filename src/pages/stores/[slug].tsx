@@ -27,12 +27,34 @@ import data from '../../dummyStore.json'
 import { ArrowRight, Minus, Plus, ShoppingBag } from 'react-feather'
 import { useState } from 'react'
 import { OrderCart, OrderItem } from '@/types/Order'
+import { useContractWrite, useNetwork, usePrepareContractWrite } from 'wagmi'
+import { contracts } from '@/constants/contracts'
+
+const contractABI = require('../../contracts/abis/LoyaltyProgram.json')
+const contractAddress = process.env.BASE_GOERLI_LOYALTYPROGRAM_STARBUCKS
+
+
 
 export default function StorePage() {
    const router = useRouter()
    const [orderType, setOrderType] = useState<string>('dine-in')
    const [cart, setCart] = useState<OrderCart>({})
+   const totalToPay = Object.values(cart).reduce(
+      (totalQuantity, curr) => totalQuantity + curr?.quantity,
+      0
+   )
    const { isOpen, onOpen, onClose } = useDisclosure()
+
+   const { chain } = useNetwork()
+   const USDC_TOKEN_CONTRACT = typeof chain === 'number' && contracts?.[chain]?.USDC
+
+   const { config } = usePrepareContractWrite({
+      address: '0xecb504d39723b0be0e3a9aa33d646642d1051ee1',
+      abi: contractABI,
+      functionName: 'payWithToken',
+      args: [USDC_TOKEN_CONTRACT, totalToPay]
+   })
+   const { data: contractWriteData, isLoading, isSuccess, write } = useContractWrite(config)
 
    const addItem = (_item: OrderItem) => {
       // if cart is empty
@@ -422,6 +444,7 @@ export default function StorePage() {
                            px={12}
                            size="lg"
                            width="100%"
+                           onClick={() => write?.()}
                         >
                            Pay
                         </Button>
@@ -445,9 +468,7 @@ export default function StorePage() {
             <HStack>
                <ShoppingBag color="white" size={30} />
                <Text>
-                  {Object.values(cart).reduce((totalQuantity, curr) => {
-                     return totalQuantity + curr?.quantity
-                  }, 0)}
+                  {totalToPay}
                </Text>
             </HStack>
          </Button>
