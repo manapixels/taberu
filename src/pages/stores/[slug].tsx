@@ -197,7 +197,8 @@ export default function StorePage() {
                               >
                                  {item.id ? (
                                     <Image
-                                       src={`/starbucks/${item.id}.webp`}
+                                       // src={`/starbucks/${item.id}.webp`}
+                                       src={`https://cloudflare-ipfs.com/ipfs/QmULhRQsgNyT4WS4kBFCCH2q2esYLQPqLV4ztDMngVDo4c/${item.id}.webp`}
                                        width="28"
                                        height="28"
                                        flex="0 0 var(--chakra-sizes-28)"
@@ -444,10 +445,9 @@ export default function StorePage() {
             <HStack>
                <ShoppingBag color="white" size={30} />
                <Text>
-                  {Object.values(cart)
-                     .reduce((totalQuantity, curr) => {
-                        return totalQuantity + curr?.quantity
-                     }, 0)}
+                  {Object.values(cart).reduce((totalQuantity, curr) => {
+                     return totalQuantity + curr?.quantity
+                  }, 0)}
                </Text>
             </HStack>
          </Button>
