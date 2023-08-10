@@ -27,13 +27,17 @@ import data from '../../dummyStore.json'
 import { ArrowRight, Minus, Plus, ShoppingBag } from 'react-feather'
 import { useState } from 'react'
 import { OrderCart, OrderItem } from '@/types/Order'
-import { useContractWrite, useNetwork, usePrepareContractWrite } from 'wagmi'
+import {
+   useAccount,
+   useContractWrite,
+   useNetwork,
+   usePrepareContractWrite,
+} from 'wagmi'
 import { contracts } from '@/constants/contracts'
+import useTokenBalance from '@/hooks/useTokenBalance'
 
 const contractABI = require('../../contracts/abis/LoyaltyProgram.json')
 const contractAddress = process.env.BASE_GOERLI_LOYALTYPROGRAM_STARBUCKS
-
-
 
 export default function StorePage() {
    const router = useRouter()
@@ -46,15 +50,28 @@ export default function StorePage() {
    const { isOpen, onOpen, onClose } = useDisclosure()
 
    const { chain } = useNetwork()
-   const USDC_TOKEN_CONTRACT = typeof chain === 'number' && contracts?.[chain]?.USDC
+   const { address, isConnected } = useAccount()
+   const USDC_TOKEN_CONTRACT =
+      typeof chain?.id === 'number' && contracts?.[chain.id]?.USDC
+   const balance = useTokenBalance({
+      userAddress: address,
+      tokenAddress: USDC_TOKEN_CONTRACT as `0x${string}`,
+      chainId: chain?.id,
+   })
 
    const { config } = usePrepareContractWrite({
-      address: '0xecb504d39723b0be0e3a9aa33d646642d1051ee1',
+      address: process.env
+         .BASE_GOERLI_LOYALTYPROGRAM_STARBUCKS as `0x${string}`,
       abi: contractABI,
       functionName: 'payWithToken',
-      args: [USDC_TOKEN_CONTRACT, totalToPay]
+      args: [USDC_TOKEN_CONTRACT, totalToPay],
    })
-   const { data: contractWriteData, isLoading, isSuccess, write } = useContractWrite(config)
+   const {
+      data: contractWriteData,
+      isLoading,
+      isSuccess,
+      write,
+   } = useContractWrite(config)
 
    const addItem = (_item: OrderItem) => {
       // if cart is empty
@@ -89,7 +106,6 @@ export default function StorePage() {
    }
 
    const removeItem = (_item: OrderItem) => {
-
       if (_item.id in cart) {
          let copy: OrderCart = JSON.parse(JSON.stringify(cart))
          // if item quantity is currently 1, remove it from cart
@@ -102,6 +118,13 @@ export default function StorePage() {
          }
       }
    }
+
+   console.log(
+      address,
+      USDC_TOKEN_CONTRACT as `0x${string}`,
+      chain?.id,
+      balance
+   )
 
    return (
       <Box pos="relative">
@@ -467,9 +490,7 @@ export default function StorePage() {
          >
             <HStack>
                <ShoppingBag color="white" size={30} />
-               <Text>
-                  {totalToPay}
-               </Text>
+               <Text>{totalToPay}</Text>
             </HStack>
          </Button>
       </Box>

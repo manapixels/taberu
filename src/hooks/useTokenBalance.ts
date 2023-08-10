@@ -9,7 +9,7 @@ export default function useTokenBalance({
    chainId?: number
    tokenAddress?: `0x${string}`
    userAddress?: `0x${string}`
-}) {
+}): number {
    const [balance, setBalance] = useState<number>(0)
 
    useEffect(() => {
@@ -22,12 +22,12 @@ export default function useTokenBalance({
          ) {
             await fetch(
                `${chains?.[chainId]?.explorerAPI}
-            ?module=account
-            &action=tokenbalance
-            &contractaddress=${tokenAddress}
-            &address=${userAddress}
-            &tag=latest
-            &apikey=${process.env[`CHAINSCAN_${chainId}_API_KEY`]}`,
+               ?module=account
+&action=tokenbalance
+&contractaddress=${tokenAddress}
+&address=${userAddress}
+&tag=latest
+&apikey=${process.env[`CHAINSCAN_${chainId}_API_KEY`]}`,
                {
                   method: 'GET',
                }
@@ -35,7 +35,7 @@ export default function useTokenBalance({
                .then((response) => response.json())
                .then((data) => {
                   console.log(
-                     '✅[GET][Token Balance][Base Mainnet]:',
+                     `✅[GET][Token Balance][${chains[chainId]?.name}]:`,
                      data?.result
                   )
                   setBalance(data?.result)
