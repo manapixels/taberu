@@ -187,6 +187,7 @@ export default function StorePage() {
                      borderRadius="md"
                      padding={1}
                      width="fit-content"
+                     // value={orderType}
                   >
                      <Button
                         mr={3}
@@ -440,22 +441,28 @@ export default function StorePage() {
                      background="white"
                      borderTop="1px solid var(--chakra-colors-lightgray-400)"
                   >
+                     <Flex
+                        justifyContent="space-between"
+                        borderBottom="1px solid var(--chakra-colors-lightgray-400)"
+                        px={6}
+                        py={3}
+                     >
+                        <Heading
+                           size="sm"
+                           color="darkgray.300"
+                           fontWeight="600"
+                        >
+                           Payment Details
+                        </Heading>
+                     </Flex>
                      <Box p={6}>
-                        {/* <Flex justifyContent="space-between">
-                           <Heading
-                              size="sm"
-                              color="darkgray.300"
-                              fontWeight="600"
-                              mb={4}
-                           >
-                              Payment Details
-                           </Heading>
-                        </Flex> */}
-
-                        <Flex alignItems="center">
-                           <Box mr={4}>Pay by</Box>
-                           <Box flex={1}>
-                              <Button width="100%">
+                        <Flex
+                           justifyContent="space-between"
+                           alignItems="center"
+                        >
+                           <HStack>
+                              <Box>Pay by</Box>
+                              <Button>
                                  <Image
                                     src="/chains/ethereum.svg"
                                     alt=""
@@ -466,16 +473,14 @@ export default function StorePage() {
                                  <Text mr={2}>ETH</Text>
                                  <ChevronDown size={12} />
                               </Button>
-                           </Box>
+                           </HStack>
+                           <HStack textAlign="right" fontSize="lg">
+                              <Text color="darkgray.100" mr={1}>
+                                 Balance:{' '}
+                              </Text>
+                              <Text>{(balance / 10 ** 18).toFixed(2)} ETH</Text>
+                           </HStack>
                         </Flex>
-                        <Box
-                           textAlign="right"
-                           fontSize="sm"
-                           color="darkgray.100"
-                           mb={3}
-                        >
-                           Balance: {(balance / 10 ** 18).toFixed(2)}
-                        </Box>
 
                         <Flex
                            background="white"
@@ -511,7 +516,7 @@ export default function StorePage() {
                                  wrap="nowrap"
                                  color="darkgray.100"
                               >
-                                 (
+                                 (≈{" "}
                                  {currencyValue &&
                                     (totalToPay / currencyValue).toPrecision(
                                        3
