@@ -24,8 +24,16 @@ import {
 } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import data from '../../dummyStore.json'
-import { ArrowRight, Minus, Plus, ShoppingBag } from 'react-feather'
+import {
+   ArrowRight,
+   ChevronDown,
+   Menu,
+   Minus,
+   Plus,
+   ShoppingBag,
+} from 'react-feather'
 import { useState } from 'react'
+import ethereumSvg from '@/images/chains/ethereum.svg'
 import { OrderCart, OrderItem } from '@/types/Order'
 import {
    useAccount,
@@ -34,7 +42,9 @@ import {
    usePrepareContractWrite,
 } from 'wagmi'
 import { contracts } from '@/constants/contracts'
-import useTokenBalance from '@/hooks/useTokenBalance'
+import useETHBalance from '@/hooks/useETHBalance'
+import { useEffectOnce } from 'react-use'
+import { getEthereumPrice } from '@/services/coingecko-price-2'
 
 const contractABI = require('../../contracts/abis/LoyaltyProgram.json')
 const contractAddress = process.env.BASE_GOERLI_LOYALTYPROGRAM_STARBUCKS
@@ -43,8 +53,11 @@ export default function StorePage() {
    const router = useRouter()
    const [orderType, setOrderType] = useState<string>('dine-in')
    const [cart, setCart] = useState<OrderCart>({})
-   const totalToPay = Object.values(cart).reduce(
-      (totalQuantity, curr) => totalQuantity + curr?.quantity,
+   const totalToPay = Object.values(cart).reduce((sum, curr) => {
+      return sum + curr?.quantity * curr?.item?.price
+   }, 0)
+   const totalQuantity = Object.values(cart).reduce(
+      (count, curr) => count + curr?.quantity,
       0
    )
    const { isOpen, onOpen, onClose } = useDisclosure()
@@ -53,10 +66,18 @@ export default function StorePage() {
    const { address, isConnected } = useAccount()
    const USDC_TOKEN_CONTRACT =
       typeof chain?.id === 'number' && contracts?.[chain.id]?.USDC
-   const balance = useTokenBalance({
+   const balance = useETHBalance({
       userAddress: address,
-      tokenAddress: USDC_TOKEN_CONTRACT as `0x${string}`,
       chainId: chain?.id,
+   })
+   const [currencyValue, setCurrencyValue] = useState<number>()
+
+   useEffectOnce(() => {
+      const getCurrencyPrice = async () => {
+         const _currencyValue = await getEthereumPrice()
+         setCurrencyValue(_currencyValue)
+      }
+      getCurrencyPrice()
    })
 
    const { config } = usePrepareContractWrite({
@@ -118,13 +139,6 @@ export default function StorePage() {
          }
       }
    }
-
-   console.log(
-      address,
-      USDC_TOKEN_CONTRACT as `0x${string}`,
-      chain?.id,
-      balance
-   )
 
    return (
       <Box pos="relative">
@@ -420,16 +434,48 @@ export default function StorePage() {
                      ))}
                   </DrawerBody>
 
-                  <DrawerFooter display="box" p={0} background="white">
+                  <DrawerFooter
+                     display="box"
+                     p={0}
+                     background="white"
+                     borderTop="1px solid var(--chakra-colors-lightgray-400)"
+                  >
                      <Box p={6}>
-                        <Heading
-                           size="sm"
-                           color="darkgray.300"
-                           fontWeight="600"
-                           mb={4}
+                        {/* <Flex justifyContent="space-between">
+                           <Heading
+                              size="sm"
+                              color="darkgray.300"
+                              fontWeight="600"
+                              mb={4}
+                           >
+                              Payment Details
+                           </Heading>
+                        </Flex> */}
+
+                        <Flex alignItems="center">
+                           <Box mr={4}>Pay by</Box>
+                           <Box flex={1}>
+                              <Button width="100%">
+                                 <Image
+                                    src="/chains/ethereum.svg"
+                                    alt=""
+                                    width={5}
+                                    height={5}
+                                    mr={2}
+                                 />
+                                 <Text mr={2}>ETH</Text>
+                                 <ChevronDown size={12} />
+                              </Button>
+                           </Box>
+                        </Flex>
+                        <Box
+                           textAlign="right"
+                           fontSize="sm"
+                           color="darkgray.100"
+                           mb={3}
                         >
-                           Payment Details
-                        </Heading>
+                           Balance: {(balance / 10 ** 18).toFixed(2)}
+                        </Box>
 
                         <Flex
                            background="white"
@@ -437,30 +483,42 @@ export default function StorePage() {
                            pos="relative"
                            alignItems="center"
                            justifyContent="space-between"
-                           p={2}
                            mb={3}
                         >
                            <Text>Total</Text>
-                           <Flex
-                              flex="0 0 4rem"
-                              justifyContent="space-between"
-                              fontSize="120%"
-                              fontWeight="bold"
-                           >
-                              <Box mr={1} color="darkgray.100">
-                                 $
-                              </Box>
-                              <Box>
-                                 {Object.values(cart)
-                                    .reduce((sum, curr) => {
-                                       return (
-                                          sum +
-                                          curr?.quantity * curr?.item?.price
-                                       )
-                                    }, 0)
-                                    .toFixed(2)}
-                              </Box>
-                           </Flex>
+                           <Box justifyContent="flex-end">
+                              <HStack
+                                 spacing={1}
+                                 flex="0 0 4rem"
+                                 fontSize="120%"
+                                 fontWeight="bold"
+                              >
+                                 <Box
+                                    mr={1}
+                                    color="darkgray.100"
+                                    fontSize="120%"
+                                    fontWeight="bold"
+                                 >
+                                    $
+                                 </Box>
+                                 <Box fontSize="120%" fontWeight="bold">
+                                    {totalToPay.toFixed(2)}
+                                 </Box>
+                              </HStack>
+                              <Flex
+                                 alignItems="center"
+                                 fontSize="sm"
+                                 wrap="nowrap"
+                                 color="darkgray.100"
+                              >
+                                 (
+                                 {currencyValue &&
+                                    (totalToPay / currencyValue).toPrecision(
+                                       3
+                                    )}{' '}
+                                 ETH )
+                              </Flex>
+                           </Box>
                         </Flex>
                         <Button
                            colorScheme="primary"
@@ -469,7 +527,10 @@ export default function StorePage() {
                            width="100%"
                            onClick={() => write?.()}
                         >
-                           Pay
+                           Pay{' '}
+                           {currencyValue &&
+                              (totalToPay / currencyValue).toPrecision(3)}{' '}
+                           ETH
                         </Button>
                      </Box>
                   </DrawerFooter>
@@ -490,7 +551,7 @@ export default function StorePage() {
          >
             <HStack>
                <ShoppingBag color="white" size={30} />
-               <Text>{totalToPay}</Text>
+               <Text>{totalQuantity}</Text>
             </HStack>
          </Button>
       </Box>

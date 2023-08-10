@@ -6,6 +6,11 @@ export const chains: Chains = {
       logo: '/chains/optimism.svg',
       explorerAPI: 'https://api-optimistic.etherscan.io/api',
    },
+   420: {
+      name: 'Optimism Goerli',
+      logo: '/chains/optimism.svg',
+      explorerAPI: 'https://api-goerli-optimistic.etherscan.io/api',
+   },
    8453: {
       name: 'Base',
       logo: '/chains/base.svg',

@@ -10,12 +10,27 @@ export type ContractsType = {
 }
 
 export const contracts: ContractsType = {
+   // 5: {
+   //    // https://github.com/ethereum-optimism/ethereum-optimism.github.io/blob/master/data/USDC/data.json
+   //    name: 'Ethereum Goerli',
+   //    logo: '/chains/ethereum.svg',
+   //    USDT: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+   //    USDC: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+   //    DAI: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+   // },
    10: {
       // https://github.com/ethereum-optimism/ethereum-optimism.github.io/blob/master/data/USDC/data.json
       name: 'Optimism',
       logo: '/chains/optimism.svg',
       USDT: '0x94b008aA00579c1307B0EF2c499aD98a8ce58e58',
       USDC: '0x7f5c764cbc14f9669b88837ca1490cca17c31607',
+      DAI: '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1',
+   },
+   420: {
+      name: 'Optimism Goerli',
+      logo: '/chains/optimism.svg',
+      USDT: '0x853eb4bA5D0Ba2B77a0A5329Fd2110d5CE149ECE',
+      USDC: '0x7E07E15D2a87A24492740D16f5bdF58c16db0c4E',
       DAI: '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1',
    },
    8453: {
