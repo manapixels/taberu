@@ -22,11 +22,6 @@ import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
 import { InjectedConnector } from 'wagmi/connectors/injected'
 
-import { Oxanium } from 'next/font/google'
-
-// If loading a variable font, you don't need to specify the font weight
-const abril = Oxanium({ weight: ["400"], subsets: ["latin-ext"] })
-
 /*  =====================
    Set up WAGMI
 =========================
@@ -180,7 +175,7 @@ export default function App({ Component, pageProps }: AppProps) {
                         content="width=device-width, initial-scale=1"
                      />
                   </Head>
-                  <Box style={abril.style} background="lightgray.100">
+                  <Box background="lightgray.100">
                      <Header />
                      <Box
                         mt={{ base: 24, md: 0 }}

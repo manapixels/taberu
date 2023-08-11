@@ -7,6 +7,11 @@ import pattern from '@/images/pattern.png'
 import contractABI from '@/contracts/abi/LoyaltyProgram.json'
 const contractAddress = process.env.BASE_GOERLI_LOYALTYPROGRAM_STARBUCKS
 
+import { Oxanium } from 'next/font/google'
+
+// If loading a variable font, you don't need to specify the font weight
+const abril = Oxanium({ weight: ['400'], subsets: ['latin-ext'] })
+
 const LoyaltyCard = () => {
    const { address, isConnecting, isDisconnected } = useAccount()
    const [blockie, setBlockie] = useState<string>()
@@ -47,7 +52,13 @@ const LoyaltyCard = () => {
    })
 
    return (
-      <Flex p={1} borderWidth={1} borderColor="primary.300" borderRadius="md">
+      <Flex
+         p={1}
+         borderWidth={1}
+         borderColor="primary.300"
+         borderRadius="md"
+         style={abril.style}
+      >
          <Flex
             flexDirection="column"
             borderRadius="md"
@@ -61,9 +72,9 @@ const LoyaltyCard = () => {
          >
             <Text
                textTransform="uppercase"
-               letterSpacing={0.5}
-               fontSize="sm"
-               color="darkgray.100"
+               letterSpacing={2}
+               fontSize="xs"
+               color="darkgray.200"
                fontWeight="bold"
             >
                Membership

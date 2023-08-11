@@ -21,6 +21,12 @@ import {
    DrawerHeader,
    DrawerBody,
    DrawerFooter,
+   TabPanels,
+   TabPanel,
+   TabList,
+   Tab,
+   Tabs,
+   TabIndicator,
 } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import data from '../../dummyStore.json'
@@ -49,6 +55,7 @@ import { chains } from '@/constants/chains'
 
 import contractABI from '@/contracts/abi/LoyaltyProgram.json'
 import LoyaltyCard from '@/components/LoyaltyCard/LoyaltyCard'
+import { useRecentTransactions } from '@/hooks/useRecentTransactions'
 const contractAddress = process.env.BASE_GOERLI_LOYALTYPROGRAM_STARBUCKS
 
 export default function StorePage() {
@@ -98,19 +105,22 @@ export default function StorePage() {
       error,
    } = useContractWrite(config)
 
-   const { data: stamps, isError: isErrorRead, isLoading: isLoadingRead } = useContractRead({
+   const {
+      data: stamps,
+      isError: isErrorRead,
+      isLoading: isLoadingRead,
+   } = useContractRead({
       address: contractAddress as `0x${string}`,
       abi: contractABI,
       functionName: 'stamps',
       args: [address],
-      watch: true
+      watch: true,
    })
 
+   const events = useRecentTransactions(address, contractAddress, chain?.id)
+
    console.log('write', contractWriteData)
-   console.log(
-      'read',
-      Number(stamps)
-   )
+   console.log('events', events)
 
    const addItem = (_item: OrderItem) => {
       // if cart is empty
@@ -164,222 +174,269 @@ export default function StorePage() {
             <Container maxW="container.xl" py="10">
                <Flex justifyContent="space-between">
                   <Box>
-                  <Box>
-                     <Breadcrumb
-                        spacing="8px"
-                        fontSize="sm"
-                        color="darkgray.100"
-                        separator={<ArrowRight size="10" />}
-                     >
-                        <BreadcrumbItem>
-                           <BreadcrumbLink>Stores</BreadcrumbLink>
-                        </BreadcrumbItem>
+                     <Box>
+                        <Breadcrumb
+                           spacing="8px"
+                           fontSize="sm"
+                           color="darkgray.100"
+                           separator={<ArrowRight size="10" />}
+                        >
+                           <BreadcrumbItem>
+                              <BreadcrumbLink>Stores</BreadcrumbLink>
+                           </BreadcrumbItem>
 
-                        <BreadcrumbItem isCurrentPage>
-                           <BreadcrumbLink href="#" textTransform="capitalize">
-                              {router.query.slug}
-                           </BreadcrumbLink>
-                        </BreadcrumbItem>
-                     </Breadcrumb>
-                  </Box>
-                  <Heading size="xl" pb={4} pt={2}>
-                     {data.name}
-                  </Heading>
-                  {data.tags && (
-                     <HStack mb={3} spacing={2}>
-                        {data.tags.map((tag, i) => (
-                           <Tag
-                              key={`tag-${tag.name}`}
-                              color="darkgray.100"
-                              background="lightgray.200"
-                              size="sm"
-                           >
-                              {tag.name}
-                           </Tag>
-                        ))}
-                     </HStack>
-                  )}
-                  <Box>
-                     <RadioGroup
-                        defaultValue="dine-in"
-                        borderWidth={1}
-                        borderColor="lightgray.600"
-                        borderRadius="md"
-                        padding={1}
-                        width="fit-content"
-                        // value={orderType}
-                     >
-                        <Button
-                           mr={3}
-                           colorScheme={
-                              orderType === 'dine-in' ? 'primary' : 'gray'
-                           }
-                           onClick={() => setOrderType('dine-in')}
+                           <BreadcrumbItem isCurrentPage>
+                              <BreadcrumbLink
+                                 href="#"
+                                 textTransform="capitalize"
+                              >
+                                 {router.query.slug}
+                              </BreadcrumbLink>
+                           </BreadcrumbItem>
+                        </Breadcrumb>
+                     </Box>
+                     <Heading size="xl" pb={4} pt={2}>
+                        {data.name}
+                     </Heading>
+                     {data.tags && (
+                        <HStack mb={3} spacing={2}>
+                           {data.tags.map((tag, i) => (
+                              <Tag
+                                 key={`tag-${tag.name}`}
+                                 color="darkgray.100"
+                                 background="lightgray.200"
+                                 size="sm"
+                              >
+                                 {tag.name}
+                              </Tag>
+                           ))}
+                        </HStack>
+                     )}
+                     <Box>
+                        <RadioGroup
+                           defaultValue="dine-in"
+                           borderWidth={1}
+                           borderColor="lightgray.600"
+                           borderRadius="md"
+                           padding={1}
+                           width="fit-content"
+                           // value={orderType}
                         >
-                           <Radio
-                              value="Dine-in"
-                              w="100%"
-                              h="100%"
-                              bg="white"
-                              _checked={{ bg: 'primary.700' }}
+                           <Button
+                              mr={3}
+                              colorScheme={
+                                 orderType === 'dine-in' ? 'primary' : 'gray'
+                              }
+                              onClick={() => setOrderType('dine-in')}
                            >
-                              Dine-in
-                           </Radio>
-                        </Button>
-                        <Button
-                           colorScheme={
-                              orderType === 'takeaway' ? 'primary' : 'gray'
-                           }
-                           onClick={() => setOrderType('takeaway')}
-                        >
-                           <Radio
-                              value="Takeaway"
-                              w="100%"
-                              h="100%"
-                              bg="white"
-                              _checked={{ bg: 'primary.700' }}
+                              <Radio
+                                 value="Dine-in"
+                                 w="100%"
+                                 h="100%"
+                                 bg="white"
+                                 _checked={{ bg: 'primary.700' }}
+                              >
+                                 Dine-in
+                              </Radio>
+                           </Button>
+                           <Button
+                              colorScheme={
+                                 orderType === 'takeaway' ? 'primary' : 'gray'
+                              }
+                              onClick={() => setOrderType('takeaway')}
                            >
-                              Takeaway
-                           </Radio>
-                        </Button>
-                     </RadioGroup>
-                  </Box>
+                              <Radio
+                                 value="Takeaway"
+                                 w="100%"
+                                 h="100%"
+                                 bg="white"
+                                 _checked={{ bg: 'primary.700' }}
+                              >
+                                 Takeaway
+                              </Radio>
+                           </Button>
+                        </RadioGroup>
+                     </Box>
                   </Box>
                   <LoyaltyCard />
                </Flex>
             </Container>
          </Box>
          <Box>
-            <Container maxW="container.xl" py="10">
-               {data.menu.map((category, i) => (
-                  <Box key={`category-${category.category}`} mb="10">
-                     <Heading size="md" color="darkgray.600">
-                        {category.category}
-                     </Heading>
-                     <Flex p="4" wrap="wrap" mx={-3}>
-                        {category.items.map((item: OrderItem, j) => (
-                           <Flex
-                              p={3}
-                              width={{ base: '100%', lg: '33.33%' }}
-                              key={`item-${item.id}`}
-                           >
-                              <Flex
-                                 p={4}
-                                 background="white"
-                                 borderRadius="md"
-                                 _hover={{
-                                    borderColor: 'blue',
-                                    cursor: 'pointer',
-                                 }}
-                                 border="2px solid transparent"
-                                 onClick={() =>
-                                    !cart?.[item?.id] && addItem(item)
-                                 }
-                                 role="group"
-                                 pos="relative"
-                              >
-                                 {item.id ? (
-                                    <Image
-                                       // src={`/starbucks/${item.id}.webp`}
-                                       src={`https://cloudflare-ipfs.com/ipfs/QmULhRQsgNyT4WS4kBFCCH2q2esYLQPqLV4ztDMngVDo4c/${item.id}.webp`}
-                                       width="28"
-                                       height="28"
-                                       flex="0 0 var(--chakra-sizes-28)"
-                                       background="lightgray.200"
-                                       borderRadius="md"
-                                       mr={3}
-                                    />
-                                 ) : (
-                                    <Box
-                                       width="28"
-                                       height="28"
-                                       flex="0 0 var(--chakra-sizes-28)"
-                                       background="lightgray.200"
-                                       borderRadius="md"
-                                       mr={3}
-                                    ></Box>
-                                 )}
-                                 <Flex flexDirection="column">
-                                    <Heading
-                                       size="sm"
-                                       fontWeight="600"
-                                       fontSize="md"
-                                       pb={2}
+            <Tabs size="md">
+               <Box background="white">
+                  <Container maxW="container.xl">
+                     <TabList>
+                        <Tab
+                           _selected={{
+                              fontWeight: 'bold',
+                              color: 'primary.500',
+                           }}
+                           color="darkgray.100"
+                           py={4}
+                        >
+                           Menu
+                        </Tab>
+                        <Tab
+                           _selected={{
+                              fontWeight: 'bold',
+                              color: 'primary.500',
+                           }}
+                           color="darkgray.100"
+                           py={4}
+                        >
+                           Past Purchases
+                        </Tab>
+                     </TabList>
+                     <TabIndicator
+                        mt="-1.5px"
+                        height="2px"
+                        bg="primary.500"
+                        borderRadius="1px"
+                     />
+                  </Container>
+               </Box>
+               <Container maxW="container.xl" py="10">
+                  <TabPanels>
+                     <TabPanel>
+                        {data.menu.map((category, i) => (
+                           <Box key={`category-${category.category}`} mb="10">
+                              <Heading size="md" color="darkgray.600">
+                                 {category.category}
+                              </Heading>
+                              <Flex p="4" wrap="wrap" mx={-3}>
+                                 {category.items.map((item: OrderItem, j) => (
+                                    <Flex
+                                       p={3}
+                                       width={{ base: '100%', lg: '33.33%' }}
+                                       key={`item-${item.id}`}
                                     >
-                                       {item.name}
-                                    </Heading>
-                                    <Box
-                                       color="darkgray.100"
-                                       fontSize="sm"
-                                       lineHeight="1.5"
-                                       flex="1"
-                                       mb={4}
-                                    >
-                                       <Text
-                                          noOfLines={4}
-                                          title={item.description}
+                                       <Flex
+                                          p={4}
+                                          background="white"
+                                          borderRadius="md"
+                                          _hover={{
+                                             borderColor: 'blue',
+                                             cursor: 'pointer',
+                                          }}
+                                          border="2px solid transparent"
+                                          onClick={() =>
+                                             !cart?.[item?.id] && addItem(item)
+                                          }
+                                          role="group"
+                                          pos="relative"
                                        >
-                                          {item.description}
-                                       </Text>
-                                    </Box>
-                                    <Box>
-                                       <HStack>
-                                          <Box mr={1}>$</Box>
-                                          <Box>{item.price.toFixed(2)}</Box>
-                                       </HStack>
-                                    </Box>
-                                 </Flex>
+                                          {item.id ? (
+                                             <Image
+                                                // src={`/starbucks/${item.id}.webp`}
+                                                src={`https://cloudflare-ipfs.com/ipfs/QmULhRQsgNyT4WS4kBFCCH2q2esYLQPqLV4ztDMngVDo4c/${item.id}.webp`}
+                                                width="28"
+                                                height="28"
+                                                flex="0 0 var(--chakra-sizes-28)"
+                                                background="lightgray.200"
+                                                borderRadius="md"
+                                                mr={3}
+                                             />
+                                          ) : (
+                                             <Box
+                                                width="28"
+                                                height="28"
+                                                flex="0 0 var(--chakra-sizes-28)"
+                                                background="lightgray.200"
+                                                borderRadius="md"
+                                                mr={3}
+                                             ></Box>
+                                          )}
+                                          <Flex flexDirection="column">
+                                             <Heading
+                                                size="sm"
+                                                fontWeight="600"
+                                                fontSize="md"
+                                                pb={2}
+                                             >
+                                                {item.name}
+                                             </Heading>
+                                             <Box
+                                                color="darkgray.100"
+                                                fontSize="sm"
+                                                lineHeight="1.5"
+                                                flex="1"
+                                                mb={4}
+                                             >
+                                                <Text
+                                                   noOfLines={4}
+                                                   title={item.description}
+                                                >
+                                                   {item.description}
+                                                </Text>
+                                             </Box>
+                                             <Box>
+                                                <HStack>
+                                                   <Box mr={1}>$</Box>
+                                                   <Box>
+                                                      {item.price.toFixed(2)}
+                                                   </Box>
+                                                </HStack>
+                                             </Box>
+                                          </Flex>
 
-                                 {cart?.[item?.id] &&
-                                 cart[item.id].quantity > 0 ? (
-                                    <HStack
-                                       spacing={1}
-                                       borderWidth={1}
-                                       borderColor="primary.500"
-                                       pos="absolute"
-                                       bottom={4}
-                                       right={4}
-                                       borderRadius="md"
-                                       p={1}
-                                       boxShadow="0px 5px 0px 0px var(--chakra-colors-primary-500)"
-                                    >
-                                       <Button
-                                          size="sm"
-                                          onClick={() => removeItem(item)}
-                                       >
-                                          <Minus size={10} />
-                                       </Button>
-                                       <Box px={2}>
-                                          {cart?.[item?.id]?.quantity}
-                                       </Box>
-                                       <Button
-                                          size="sm"
-                                          onClick={() => addItem(item)}
-                                       >
-                                          <Plus size={10} />
-                                       </Button>
-                                    </HStack>
-                                 ) : (
-                                    <Box
-                                       opacity={0}
-                                       borderRadius="md"
-                                       background="primary.500"
-                                       pos="absolute"
-                                       bottom={4}
-                                       right={4}
-                                       _groupHover={{ opacity: '1' }}
-                                       p={2}
-                                    >
-                                       <Plus color="white" />
-                                    </Box>
-                                 )}
+                                          {cart?.[item?.id] &&
+                                          cart[item.id].quantity > 0 ? (
+                                             <HStack
+                                                spacing={1}
+                                                borderWidth={1}
+                                                borderColor="primary.500"
+                                                pos="absolute"
+                                                bottom={4}
+                                                right={4}
+                                                borderRadius="md"
+                                                p={1}
+                                                boxShadow="0px 5px 0px 0px var(--chakra-colors-primary-500)"
+                                             >
+                                                <Button
+                                                   size="sm"
+                                                   onClick={() =>
+                                                      removeItem(item)
+                                                   }
+                                                >
+                                                   <Minus size={10} />
+                                                </Button>
+                                                <Box px={2}>
+                                                   {cart?.[item?.id]?.quantity}
+                                                </Box>
+                                                <Button
+                                                   size="sm"
+                                                   onClick={() => addItem(item)}
+                                                >
+                                                   <Plus size={10} />
+                                                </Button>
+                                             </HStack>
+                                          ) : (
+                                             <Box
+                                                opacity={0}
+                                                borderRadius="md"
+                                                background="primary.500"
+                                                pos="absolute"
+                                                bottom={4}
+                                                right={4}
+                                                _groupHover={{ opacity: '1' }}
+                                                p={2}
+                                             >
+                                                <Plus color="white" />
+                                             </Box>
+                                          )}
+                                       </Flex>
+                                    </Flex>
+                                 ))}
                               </Flex>
-                           </Flex>
+                           </Box>
                         ))}
-                     </Flex>
-                  </Box>
-               ))}
-            </Container>
+                     </TabPanel>
+                     <TabPanel>transactions</TabPanel>
+                  </TabPanels>
+               </Container>
+            </Tabs>
+
             <Drawer
                isOpen={isOpen}
                placement="right"
@@ -536,6 +593,7 @@ export default function StorePage() {
                                  flex="0 0 4rem"
                                  fontSize="120%"
                                  fontWeight="bold"
+                                 justifyContent="flex-end"
                               >
                                  <Box
                                     mr={1}

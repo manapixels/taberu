@@ -30,10 +30,10 @@ export default function useTokenBalance({
             )
                .then((response) => response.json())
                .then((data) => {
-                  console.log(
-                     `✅[GET][Token Balance][${chains[chainId]?.name}]:`,
-                     data?.result
-                  )
+                  // console.log(
+                  //    `✅[GET][Token Balance][${chains[chainId]?.name}]:`,
+                  //    data?.result
+                  // )
                   setBalance(data?.result)
                })
                .catch((error) => console.log('error', error))

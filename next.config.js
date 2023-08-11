@@ -13,16 +13,17 @@ const nextConfig = {
       CHAINSCAN_84531_API_KEY: process.env.CHAINSCAN_84531_API_KEY,
       CHAINSCAN_10_API_KEY: process.env.CHAINSCAN_10_API_KEY,
       CHAINSCAN_420_API_KEY: process.env.CHAINSCAN_420_API_KEY,
+      COVALENT_API_KEY: process.env.COVALENT_API_KEY
    },
-   // async redirects() {
-   //   return [
-   //     {
-   //       source: '/',
-   //       destination: '/accounts',
-   //       permanent: false
-   //     }
-   //   ]
-   // }
+   async redirects() {
+     return [
+       {
+         source: '/',
+         destination: '/stores/starbucks',
+         permanent: false
+       }
+     ]
+   }
 }
 
 module.exports = nextConfig
