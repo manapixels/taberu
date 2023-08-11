@@ -1,29 +1,14 @@
 [
    {
-      "inputs": [],
-      "name": "payWithETH",
-      "outputs": [],
-      "stateMutability": "payable",
-      "type": "function"
-   },
-   {
       "inputs": [
          {
             "internalType": "uint256",
-            "name": "_amount",
+            "name": "_pointPrice",
             "type": "uint256"
-         }
-      ],
-      "name": "redeemStamps",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-   },
-   {
-      "inputs": [
+         },
          {
             "internalType": "uint256",
-            "name": "_stampPrice",
+            "name": "_pointValue",
             "type": "uint256"
          }
       ],
@@ -46,7 +31,33 @@
             "type": "uint256"
          }
       ],
-      "name": "StampsAwarded",
+      "name": "Paid",
+      "type": "event"
+   },
+   {
+      "inputs": [],
+      "name": "payWithETH",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+   },
+   {
+      "anonymous": false,
+      "inputs": [
+         {
+            "indexed": true,
+            "internalType": "address",
+            "name": "customer",
+            "type": "address"
+         },
+         {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+         }
+      ],
+      "name": "PointsAwarded",
       "type": "event"
    },
    {
@@ -65,8 +76,21 @@
             "type": "uint256"
          }
       ],
-      "name": "StampsRedeemed",
+      "name": "PointsRedeemed",
       "type": "event"
+   },
+   {
+      "inputs": [
+         {
+            "internalType": "uint256",
+            "name": "_amount",
+            "type": "uint256"
+         }
+      ],
+      "name": "redeemPoints",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
    },
    {
       "inputs": [],
@@ -90,7 +114,7 @@
    },
    {
       "inputs": [],
-      "name": "stampPrice",
+      "name": "pointPrice",
       "outputs": [
          {
             "internalType": "uint256",
@@ -109,7 +133,20 @@
             "type": "address"
          }
       ],
-      "name": "stamps",
+      "name": "points",
+      "outputs": [
+         {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+         }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+   },
+   {
+      "inputs": [],
+      "name": "pointValue",
       "outputs": [
          {
             "internalType": "uint256",
