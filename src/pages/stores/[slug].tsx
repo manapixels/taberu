@@ -102,6 +102,9 @@ export default function StorePage() {
       value: currencyValue
          ? parseEther((totalToPay / currencyValue).toString())
          : parseEther('0'),
+   })
+   const { isLoading, write, error } = useContractWrite({
+      ...config,
       onSuccess(data) {
          console.log('Success', data)
          onClose()
@@ -113,11 +116,6 @@ export default function StorePage() {
          })
       },
    })
-   const {
-      isLoading,
-      write,
-      error,
-   } = useContractWrite(config)
 
    const { txns } = useRecentTransactions(address, contractAddress, chain?.id)
 
