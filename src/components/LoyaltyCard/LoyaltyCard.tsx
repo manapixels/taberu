@@ -40,13 +40,13 @@ const LoyaltyCard = () => {
    })
 
    const {
-      data: stamps,
+      data: points,
       isError: isErrorRead,
       isLoading: isLoadingRead,
    } = useContractRead({
       address: contractAddress as `0x${string}`,
       abi: contractABI,
-      functionName: 'stamps',
+      functionName: 'points',
       args: [address],
       watch: true,
    })
@@ -132,7 +132,7 @@ const LoyaltyCard = () => {
                   lineHeight={1}
                   color="primary.500"
                >
-                  {Number(stamps)}
+                  {points ? Number(points) : 0}
                </Box>
             </HStack>
          </Flex>

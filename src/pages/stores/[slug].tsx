@@ -30,6 +30,7 @@ import {
    Tooltip,
    Badge,
    Link,
+   useToast,
 } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import data from '../../dummyStore.json'
@@ -75,6 +76,7 @@ export default function StorePage() {
       0
    )
    const { isOpen, onOpen, onClose } = useDisclosure()
+   const toast = useToast()
 
    const { chain } = useNetwork()
    const { address, isConnected } = useAccount()
@@ -101,6 +103,16 @@ export default function StorePage() {
       value: currencyValue
          ? parseEther((totalToPay / currencyValue).toString())
          : parseEther('0'),
+      onSuccess(data) {
+         console.log('Success', data)
+         onClose()
+         toast({
+            title: 'Paid successfully',
+            status: 'success',
+            duration: 3000,
+            isClosable: true,
+         })
+      },
    })
    const {
       data: contractWriteData,
@@ -109,18 +121,6 @@ export default function StorePage() {
       write,
       error,
    } = useContractWrite(config)
-
-   const {
-      data: stamps,
-      isError: isErrorRead,
-      isLoading: isLoadingRead,
-   } = useContractRead({
-      address: contractAddress as `0x${string}`,
-      abi: contractABI,
-      functionName: 'stamps',
-      args: [address],
-      watch: true,
-   })
 
    const { txns } = useRecentTransactions(address, contractAddress, chain?.id)
 
