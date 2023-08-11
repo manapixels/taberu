@@ -27,7 +27,7 @@ import { InjectedConnector } from 'wagmi/connectors/injected'
 =========================
 */
 const { chains, publicClient, webSocketPublicClient, ...a } = configureChains(
-   [base, baseGoerli, optimismGoerli, optimism],
+   [mainnet, base, baseGoerli, optimismGoerli, optimism],
    [
       // alchemyProvider({ apiKey: process.env.ALCHEMY_API_KEY || '' }),
       publicProvider(),

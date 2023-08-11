@@ -26,7 +26,7 @@ import { ChevronDown } from 'react-feather'
 export default function Index() {
    const { address, isConnected } = useAccount()
    const [blockie, setBlockie] = useState<string>()
-   const { data: ensName } = useEnsName({ address })
+   const { data: ensName } = useEnsName({ address, chainId: 1 })
 
    const { chain } = useNetwork()
    const {
@@ -110,7 +110,7 @@ export default function Index() {
                      />
                   </Box>
                )}
-               {ensName ?? (address && truncateEthereumAddress(address))}
+               {ensName ? ensName : (address && truncateEthereumAddress(address))}
             </Button>
          )}
          {!_isConnected &&
