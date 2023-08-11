@@ -1,5 +1,5 @@
-import { Avatar, Box, Flex, HStack, Text } from '@chakra-ui/react'
-import { useAccount, useContractRead, useEnsAvatar, useEnsName } from 'wagmi'
+import { Avatar, Box, Button, Flex, HStack, Text, useToast } from '@chakra-ui/react'
+import { useAccount, useContractRead, useContractReads, useContractWrite, useEnsAvatar, useEnsName, usePrepareContractWrite } from 'wagmi'
 import * as blockies from 'blockies-ts'
 import { useEffect, useState } from 'react'
 import { truncateEthereumAddress } from '@/utils/address'
@@ -8,13 +8,14 @@ import contractABI from '@/contracts/abi/LoyaltyProgram.json'
 const contractAddress = process.env.BASE_GOERLI_LOYALTYPROGRAM_STARBUCKS
 
 import { Oxanium } from 'next/font/google'
+import { AbiItem } from 'viem'
 
-// If loading a variable font, you don't need to specify the font weight
 const abril = Oxanium({ weight: ['400'], subsets: ['latin-ext'] })
 
 const LoyaltyCard = () => {
    const { address, isConnecting, isDisconnected } = useAccount()
    const [blockie, setBlockie] = useState<string>()
+   const toast = useToast()
 
    useEffect(() => {
       if (address) {
@@ -40,16 +41,52 @@ const LoyaltyCard = () => {
    })
 
    const {
-      data: points,
+      data: chainData,
       isError: isErrorRead,
       isLoading: isLoadingRead,
-   } = useContractRead({
-      address: contractAddress as `0x${string}`,
-      abi: contractABI,
-      functionName: 'points',
-      args: [address],
+   } = useContractReads({
+      contracts: [
+         {
+            address: contractAddress as `0x${string}`,
+            abi: contractABI as AbiItem[],
+            functionName: 'points',
+            //@ts-ignore
+            args: [address],
+         },
+         {
+            address: contractAddress as `0x${string}`,
+            abi: contractABI as AbiItem[],
+            functionName: 'pointValue',
+         },
+      ],
       watch: true,
    })
+
+   const points = chainData?.[0]?.result ? Number(chainData[0].result) : 0
+   const redeemableValue = chainData?.[1]?.result ? Number(chainData[1].result)/Math.pow(10, 18) * points : 0
+
+   console.log('read', chainData)
+
+   const { config } = usePrepareContractWrite({
+      address: contractAddress as `0x${string}`,
+      abi: contractABI,
+      functionName: 'redeemPoints',
+      args: [],
+      onSuccess(data) {
+         console.log('Success', data)
+         toast({
+            title: 'Redemption successful',
+            status: 'success',
+            duration: 3000,
+            isClosable: true,
+         })
+      },
+   })
+   const {
+      isLoading,
+      write,
+      error,
+   } = useContractWrite(config)
 
    return (
       <Flex
@@ -122,19 +159,27 @@ const LoyaltyCard = () => {
                   )}
                </Box>
             </HStack>
-            <HStack alignSelf="flex-end">
-               <Box letterSpacing={1} textTransform="uppercase">
-                  Points
-               </Box>
-               <Box
-                  fontSize={40}
-                  fontWeight="bold"
-                  lineHeight={1}
-                  color="primary.500"
-               >
-                  {points ? Number(points) : 0}
-               </Box>
-            </HStack>
+            <Box alignSelf="flex-end">
+               <HStack>
+                  <Box letterSpacing={1} textTransform="uppercase">
+                     Points
+                  </Box>
+                  <Box
+                     fontSize={40}
+                     fontWeight="bold"
+                     lineHeight={1}
+                     color="primary.500"
+                  >
+                     {points}
+                  </Box>
+               </HStack>
+               {redeemableValue > 0 && (
+               <Button size="xs" variant="black">
+                  Redeem{' '}
+                  {redeemableValue} ETH
+               </Button>
+               )}
+            </Box>
          </Flex>
       </Flex>
    )

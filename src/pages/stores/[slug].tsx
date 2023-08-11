@@ -46,7 +46,6 @@ import { useState } from 'react'
 import { OrderCart, OrderItem } from '@/types/Order'
 import {
    useAccount,
-   useContractRead,
    useContractWrite,
    useNetwork,
    usePrepareContractWrite,
@@ -115,9 +114,7 @@ export default function StorePage() {
       },
    })
    const {
-      data: contractWriteData,
       isLoading,
-      isSuccess,
       write,
       error,
    } = useContractWrite(config)
