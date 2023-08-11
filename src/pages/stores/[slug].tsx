@@ -35,6 +35,7 @@ import { useState } from 'react'
 import { OrderCart, OrderItem } from '@/types/Order'
 import {
    useAccount,
+   useContractRead,
    useContractWrite,
    useNetwork,
    usePrepareContractWrite,
@@ -46,9 +47,9 @@ import { getEthereumPrice } from '@/services/coingecko-price-2'
 import { parseEther } from 'viem'
 import { chains } from '@/constants/chains'
 
-const contractABI = require('../../contracts/abis/LoyaltyProgramETH.json')
+import contractABI from '@/contracts/abi/LoyaltyProgram.json'
 const contractAddress = process.env.BASE_GOERLI_LOYALTYPROGRAM_STARBUCKS
-
+console.log(process.env)
 export default function StorePage() {
    const router = useRouter()
    const [orderType, setOrderType] = useState<string>('dine-in')
@@ -84,17 +85,35 @@ export default function StorePage() {
       address: contractAddress as `0x${string}`,
       abi: contractABI,
       functionName: 'payWithETH',
-      value: currencyValue ? parseEther((totalToPay / currencyValue).toString()) : parseEther("0")
+      value: currencyValue
+         ? parseEther((totalToPay / currencyValue).toString())
+         : parseEther('0'),
    })
    const {
       data: contractWriteData,
       isLoading,
       isSuccess,
       write,
-      error
+      error,
    } = useContractWrite(config)
 
-   console.log(contractWriteData, isLoading, isSuccess, write, error)
+   const { data: stamps, isError: isErrorRead, isLoading: isLoadingRead, ...dd } = useContractRead({
+      address: contractAddress as `0x${string}`,
+      abi: contractABI,
+      functionName: 'stamps',
+      args: [address],
+      watch: true
+   })
+
+   console.log('write', contractWriteData, isLoading, isSuccess, write, error)
+   console.log(
+      'read',
+      stamps,
+      isErrorRead,
+      isLoadingRead,
+      dd,
+      contractAddress as `0x${string}`
+   )
 
    const addItem = (_item: OrderItem) => {
       // if cart is empty
@@ -466,7 +485,9 @@ export default function StorePage() {
                                     width={4}
                                     height={4}
                                  />
-                                 <i style={{ marginLeft: '.1rem'}}>{chains[chain.id]?.name}</i>
+                                 <i style={{ marginLeft: '.1rem' }}>
+                                    {chains[chain.id]?.name}
+                                 </i>
                               </HStack>
                            )}
                         </HStack>
@@ -550,7 +571,8 @@ export default function StorePage() {
                            isLoading={isLoading}
                            loadingText="Paying..."
                         >
-                           Pay {currencyValue &&
+                           Pay{' '}
+                           {currencyValue &&
                               (totalToPay / currencyValue).toPrecision(3)}{' '}
                            ETH
                         </Button>

@@ -1,19 +1,28 @@
 /** @type {import('next').NextConfig} */
 
 const nextConfig = {
-  reactStrictMode: true,
-  env: {
-    ALCHEMY_API_KEY: process.env.ALCHEMY_API_KEY,
-  },
-  // async redirects() {
-  //   return [
-  //     {
-  //       source: '/',
-  //       destination: '/accounts',
-  //       permanent: false
-  //     }
-  //   ]
-  // }
+   reactStrictMode: true,
+   env: {
+      ALCHEMY_API_KEY: process.env.ALCHEMY_API_KEY,
+      COINMARKETCAP_API_KEY: process.env.COINMARKETCAP_API_KEY,
+      BASE_GOERLI_LOYALTYPROGRAMFACTORY:
+         process.env.BASE_GOERLI_LOYALTYPROGRAMFACTORY,
+      BASE_GOERLI_LOYALTYPROGRAM_STARBUCKS:
+         process.env.BASE_GOERLI_LOYALTYPROGRAM_STARBUCKS,
+      CHAINSCAN_8453_API_KEY: process.env.CHAINSCAN_8453_API_KEY,
+      CHAINSCAN_84531_API_KEY: process.env.CHAINSCAN_84531_API_KEY,
+      CHAINSCAN_10_API_KEY: process.env.CHAINSCAN_10_API_KEY,
+      CHAINSCAN_420_API_KEY: process.env.CHAINSCAN_420_API_KEY,
+   },
+   // async redirects() {
+   //   return [
+   //     {
+   //       source: '/',
+   //       destination: '/accounts',
+   //       permanent: false
+   //     }
+   //   ]
+   // }
 }
 
 module.exports = nextConfig

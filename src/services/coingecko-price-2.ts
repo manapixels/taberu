@@ -7,7 +7,7 @@ export const getEthereumPrice = async () => {
    )
       .then((response) => response.json())
       .then((data) => {
-         console.log(`✅[GET][Ethereum Price]:`, data)
+         console.log(`✅[GET][Ethereum Price]:`, data?.[0]?.current_price)
          return data
       })
       .catch((error) => console.log('error', error))

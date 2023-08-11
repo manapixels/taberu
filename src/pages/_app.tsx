@@ -17,7 +17,7 @@ import Header from '@/components/Header'
 import { AccountsContextProvider } from '@/contexts/accountsContext'
 
 import '@/styles/globals.scss'
-import { mainnet, zkSync, zkSyncTestnet } from 'wagmi/chains'
+import { base, baseGoerli, mainnet, optimism, optimismGoerli, zkSync, zkSyncTestnet } from 'wagmi/chains'
 import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
 import { InjectedConnector } from 'wagmi/connectors/injected'
@@ -27,9 +27,9 @@ import { InjectedConnector } from 'wagmi/connectors/injected'
 =========================
 */
 const { chains, publicClient, webSocketPublicClient, ...a } = configureChains(
-   [mainnet, zkSync],
+   [base, baseGoerli, optimismGoerli, optimism],
    [
-      alchemyProvider({ apiKey: process.env.ALCHEMY_API_KEY || '' }),
+      // alchemyProvider({ apiKey: process.env.ALCHEMY_API_KEY || '' }),
       publicProvider(),
    ]
 )
