@@ -17,10 +17,15 @@ import Header from '@/components/Header'
 import { AccountsContextProvider } from '@/contexts/accountsContext'
 
 import '@/styles/globals.scss'
-import { base, baseGoerli, mainnet, optimism, optimismGoerli, zkSync, zkSyncTestnet } from 'wagmi/chains'
+import { base, baseGoerli, mainnet, optimism, optimismGoerli } from 'wagmi/chains'
 import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
 import { InjectedConnector } from 'wagmi/connectors/injected'
+
+import { Oxanium } from 'next/font/google'
+
+// If loading a variable font, you don't need to specify the font weight
+const abril = Oxanium({ weight: ["400"], subsets: ["latin-ext"] })
 
 /*  =====================
    Set up WAGMI
@@ -161,8 +166,6 @@ Input.defaultProps = {
    focusBorderColor: 'lightgray.800',
 }
 
-const inter = Inter({ subsets: ['latin'] })
-
 export default function App({ Component, pageProps }: AppProps) {
    const queryClient = new QueryClient()
    return (
@@ -177,7 +180,7 @@ export default function App({ Component, pageProps }: AppProps) {
                         content="width=device-width, initial-scale=1"
                      />
                   </Head>
-                  <Box style={inter.style} background="lightgray.100">
+                  <Box style={abril.style} background="lightgray.100">
                      <Header />
                      <Box
                         mt={{ base: 24, md: 0 }}

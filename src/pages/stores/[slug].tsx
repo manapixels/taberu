@@ -48,8 +48,9 @@ import { parseEther } from 'viem'
 import { chains } from '@/constants/chains'
 
 import contractABI from '@/contracts/abi/LoyaltyProgram.json'
+import LoyaltyCard from '@/components/LoyaltyCard/LoyaltyCard'
 const contractAddress = process.env.BASE_GOERLI_LOYALTYPROGRAM_STARBUCKS
-console.log(process.env)
+
 export default function StorePage() {
    const router = useRouter()
    const [orderType, setOrderType] = useState<string>('dine-in')
@@ -65,8 +66,8 @@ export default function StorePage() {
 
    const { chain } = useNetwork()
    const { address, isConnected } = useAccount()
-   const USDC_TOKEN_CONTRACT =
-      typeof chain?.id === 'number' && contracts?.[chain.id]?.USDC
+   // const USDC_TOKEN_CONTRACT =
+   //    typeof chain?.id === 'number' && contracts?.[chain.id]?.USDC
    const balance = useETHBalance({
       userAddress: address,
       chainId: chain?.id,
@@ -97,7 +98,7 @@ export default function StorePage() {
       error,
    } = useContractWrite(config)
 
-   const { data: stamps, isError: isErrorRead, isLoading: isLoadingRead, ...dd } = useContractRead({
+   const { data: stamps, isError: isErrorRead, isLoading: isLoadingRead } = useContractRead({
       address: contractAddress as `0x${string}`,
       abi: contractABI,
       functionName: 'stamps',
@@ -105,14 +106,10 @@ export default function StorePage() {
       watch: true
    })
 
-   console.log('write', contractWriteData, isLoading, isSuccess, write, error)
+   console.log('write', contractWriteData)
    console.log(
       'read',
-      stamps,
-      isErrorRead,
-      isLoadingRead,
-      dd,
-      contractAddress as `0x${string}`
+      Number(stamps)
    )
 
    const addItem = (_item: OrderItem) => {
@@ -165,86 +162,91 @@ export default function StorePage() {
       <Box pos="relative">
          <Box background="white">
             <Container maxW="container.xl" py="10">
-               <Box>
-                  <Breadcrumb
-                     spacing="8px"
-                     fontSize="sm"
-                     color="darkgray.100"
-                     separator={<ArrowRight size="10" />}
-                  >
-                     <BreadcrumbItem>
-                        <BreadcrumbLink>Stores</BreadcrumbLink>
-                     </BreadcrumbItem>
+               <Flex justifyContent="space-between">
+                  <Box>
+                  <Box>
+                     <Breadcrumb
+                        spacing="8px"
+                        fontSize="sm"
+                        color="darkgray.100"
+                        separator={<ArrowRight size="10" />}
+                     >
+                        <BreadcrumbItem>
+                           <BreadcrumbLink>Stores</BreadcrumbLink>
+                        </BreadcrumbItem>
 
-                     <BreadcrumbItem isCurrentPage>
-                        <BreadcrumbLink href="#" textTransform="capitalize">
-                           {router.query.slug}
-                        </BreadcrumbLink>
-                     </BreadcrumbItem>
-                  </Breadcrumb>
-               </Box>
-               <Heading size="xl" pb={4} pt={2}>
-                  {data.name}
-               </Heading>
-               {data.tags && (
-                  <HStack mb={3} spacing={2}>
-                     {data.tags.map((tag, i) => (
-                        <Tag
-                           key={`tag-${tag.name}`}
-                           color="darkgray.100"
-                           background="lightgray.200"
-                           size="sm"
-                        >
-                           {tag.name}
-                        </Tag>
-                     ))}
-                  </HStack>
-               )}
-               <Box>
-                  <RadioGroup
-                     defaultValue="dine-in"
-                     borderWidth={1}
-                     borderColor="lightgray.600"
-                     borderRadius="md"
-                     padding={1}
-                     width="fit-content"
-                     // value={orderType}
-                  >
-                     <Button
-                        mr={3}
-                        colorScheme={
-                           orderType === 'dine-in' ? 'primary' : 'gray'
-                        }
-                        onClick={() => setOrderType('dine-in')}
+                        <BreadcrumbItem isCurrentPage>
+                           <BreadcrumbLink href="#" textTransform="capitalize">
+                              {router.query.slug}
+                           </BreadcrumbLink>
+                        </BreadcrumbItem>
+                     </Breadcrumb>
+                  </Box>
+                  <Heading size="xl" pb={4} pt={2}>
+                     {data.name}
+                  </Heading>
+                  {data.tags && (
+                     <HStack mb={3} spacing={2}>
+                        {data.tags.map((tag, i) => (
+                           <Tag
+                              key={`tag-${tag.name}`}
+                              color="darkgray.100"
+                              background="lightgray.200"
+                              size="sm"
+                           >
+                              {tag.name}
+                           </Tag>
+                        ))}
+                     </HStack>
+                  )}
+                  <Box>
+                     <RadioGroup
+                        defaultValue="dine-in"
+                        borderWidth={1}
+                        borderColor="lightgray.600"
+                        borderRadius="md"
+                        padding={1}
+                        width="fit-content"
+                        // value={orderType}
                      >
-                        <Radio
-                           value="Dine-in"
-                           w="100%"
-                           h="100%"
-                           bg="white"
-                           _checked={{ bg: 'primary.700' }}
+                        <Button
+                           mr={3}
+                           colorScheme={
+                              orderType === 'dine-in' ? 'primary' : 'gray'
+                           }
+                           onClick={() => setOrderType('dine-in')}
                         >
-                           Dine-in
-                        </Radio>
-                     </Button>
-                     <Button
-                        colorScheme={
-                           orderType === 'takeaway' ? 'primary' : 'gray'
-                        }
-                        onClick={() => setOrderType('takeaway')}
-                     >
-                        <Radio
-                           value="Takeaway"
-                           w="100%"
-                           h="100%"
-                           bg="white"
-                           _checked={{ bg: 'primary.700' }}
+                           <Radio
+                              value="Dine-in"
+                              w="100%"
+                              h="100%"
+                              bg="white"
+                              _checked={{ bg: 'primary.700' }}
+                           >
+                              Dine-in
+                           </Radio>
+                        </Button>
+                        <Button
+                           colorScheme={
+                              orderType === 'takeaway' ? 'primary' : 'gray'
+                           }
+                           onClick={() => setOrderType('takeaway')}
                         >
-                           Takeaway
-                        </Radio>
-                     </Button>
-                  </RadioGroup>
-               </Box>
+                           <Radio
+                              value="Takeaway"
+                              w="100%"
+                              h="100%"
+                              bg="white"
+                              _checked={{ bg: 'primary.700' }}
+                           >
+                              Takeaway
+                           </Radio>
+                        </Button>
+                     </RadioGroup>
+                  </Box>
+                  </Box>
+                  <LoyaltyCard />
+               </Flex>
             </Container>
          </Box>
          <Box>
