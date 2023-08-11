@@ -27,13 +27,11 @@ import data from '../../dummyStore.json'
 import {
    ArrowRight,
    ChevronDown,
-   Menu,
    Minus,
    Plus,
    ShoppingBag,
 } from 'react-feather'
 import { useState } from 'react'
-import ethereumSvg from '@/images/chains/ethereum.svg'
 import { OrderCart, OrderItem } from '@/types/Order'
 import {
    useAccount,
@@ -45,8 +43,10 @@ import { contracts } from '@/constants/contracts'
 import useETHBalance from '@/hooks/useETHBalance'
 import { useEffectOnce } from 'react-use'
 import { getEthereumPrice } from '@/services/coingecko-price-2'
+import { parseEther } from 'viem'
+import { chains } from '@/constants/chains'
 
-const contractABI = require('../../contracts/abis/LoyaltyProgram.json')
+const contractABI = require('../../contracts/abis/LoyaltyProgramETH.json')
 const contractAddress = process.env.BASE_GOERLI_LOYALTYPROGRAM_STARBUCKS
 
 export default function StorePage() {
@@ -70,7 +70,7 @@ export default function StorePage() {
       userAddress: address,
       chainId: chain?.id,
    })
-   const [currencyValue, setCurrencyValue] = useState<number>()
+   const [currencyValue, setCurrencyValue] = useState<number>(0)
 
    useEffectOnce(() => {
       const getCurrencyPrice = async () => {
@@ -81,18 +81,20 @@ export default function StorePage() {
    })
 
    const { config } = usePrepareContractWrite({
-      address: process.env
-         .BASE_GOERLI_LOYALTYPROGRAM_STARBUCKS as `0x${string}`,
+      address: contractAddress as `0x${string}`,
       abi: contractABI,
-      functionName: 'payWithToken',
-      args: [USDC_TOKEN_CONTRACT, totalToPay],
+      functionName: 'payWithETH',
+      value: currencyValue ? parseEther((totalToPay / currencyValue).toString()) : parseEther("0")
    })
    const {
       data: contractWriteData,
       isLoading,
       isSuccess,
       write,
+      error
    } = useContractWrite(config)
+
+   console.log(contractWriteData, isLoading, isSuccess, write, error)
 
    const addItem = (_item: OrderItem) => {
       // if cart is empty
@@ -454,6 +456,20 @@ export default function StorePage() {
                         >
                            Payment Details
                         </Heading>
+                        <HStack color="darkgray.100">
+                           <Box>on</Box>
+                           {chain && (
+                              <HStack>
+                                 <Image
+                                    src={chains[chain.id]?.logo}
+                                    alt=""
+                                    width={4}
+                                    height={4}
+                                 />
+                                 <i style={{ marginLeft: '.1rem'}}>{chains[chain.id]?.name}</i>
+                              </HStack>
+                           )}
+                        </HStack>
                      </Flex>
                      <Box p={6}>
                         <Flex
@@ -516,7 +532,7 @@ export default function StorePage() {
                                  wrap="nowrap"
                                  color="darkgray.100"
                               >
-                                 (≈{" "}
+                                 (≈{' '}
                                  {currencyValue &&
                                     (totalToPay / currencyValue).toPrecision(
                                        3
@@ -531,9 +547,10 @@ export default function StorePage() {
                            size="lg"
                            width="100%"
                            onClick={() => write?.()}
+                           isLoading={isLoading}
+                           loadingText="Paying..."
                         >
-                           Pay{' '}
-                           {currencyValue &&
+                           Pay {currencyValue &&
                               (totalToPay / currencyValue).toPrecision(3)}{' '}
                            ETH
                         </Button>

@@ -82,6 +82,8 @@ export default function Index() {
                         minH="48px"
                         key={`chain-${value?.name}`}
                         onClick={() => key && switchNetwork?.(parseInt(key))}
+                        background={chain?.id === parseInt(key) ? 'var(--chakra-colors-gray-200)' : 'unset'}
+                        _hover={{ background: "var(--chakra-colors-gray-200)" }}
                      >
                         <Image
                            src={value?.logo}
