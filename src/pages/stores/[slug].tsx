@@ -29,12 +29,14 @@ import {
    TabIndicator,
    Tooltip,
    Badge,
+   Link,
 } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import data from '../../dummyStore.json'
 import {
    ArrowRight,
    ChevronDown,
+   ExternalLink,
    Minus,
    Plus,
    ShoppingBag,
@@ -57,6 +59,8 @@ import { chains } from '@/constants/chains'
 import contractABI from '@/contracts/abi/LoyaltyProgram.json'
 import LoyaltyCard from '@/components/LoyaltyCard/LoyaltyCard'
 import { useRecentTransactions } from '@/hooks/useRecentTransactions'
+import { getFormattedDate, getFormattedDateTime } from '@/utils/datetime'
+import { truncateEthereumAddress } from '@/utils/address'
 const contractAddress = process.env.BASE_GOERLI_LOYALTYPROGRAM_STARBUCKS
 
 export default function StorePage() {
@@ -119,8 +123,6 @@ export default function StorePage() {
    })
 
    const { txns } = useRecentTransactions(address, contractAddress, chain?.id)
-
-   console.log('write', contractWriteData)
 
    const addItem = (_item: OrderItem) => {
       // if cart is empty
@@ -288,7 +290,12 @@ export default function StorePage() {
                            <HStack>
                               <Box>Past Purchases </Box>
                               {txns && txns.length > 0 && (
-                                 <Badge background="primary.500" color="white" ml={1} fontSize="sm">
+                                 <Badge
+                                    background="primary.500"
+                                    color="white"
+                                    ml={1}
+                                    fontSize="sm"
+                                 >
                                     {txns.length}
                                  </Badge>
                               )}
@@ -441,16 +448,64 @@ export default function StorePage() {
                      </TabPanel>
                      <TabPanel>
                         {txns?.map((t, i) => (
-                           <Box>
-                              <Box>{t?.block_signed_at}</Box>
+                           <Flex
+                              background="white"
+                              borderRadius="md"
+                              px={6}
+                              py={4}
+                              mb={4}
+                              borderWidth={1}
+                              borderColor="lightgray.400"
+                           >
+                              <Flex px={8} color="primary.800" background="primary.100" borderRadius="md" justifyContent="center" alignItems="center" mr={5}>
+                                 {i + 1}
+                              </Flex>
                               <Box>
-                                 Spent: {t?.pretty_value_quote} (+{' '}
-                                 <Tooltip label="Transaction fee">
-                                    {t?.pretty_gas_quote}
-                                 </Tooltip>
+                                 <Box
+                                    color="darkgray.300"
+                                    letterSpacing="0.03rem"
+                                    fontSize="xs"
+                                 >
+                                    {t?.block_signed_at &&
+                                       getFormattedDateTime(t.block_signed_at)}
+                                 </Box>
+                                 <HStack>
+                                    <Box mr={1}>
+                                       Spent: {t?.pretty_value_quote}
+                                    </Box>
+                                    <Box fontSize="sm" color="darkgray.500">
+                                       (+{' '}
+                                       <Tooltip label="Transaction fee">
+                                          {t?.pretty_gas_quote}
+                                       </Tooltip>
+                                       )
+                                    </Box>
+                                 </HStack>
+                                 {t?.tx_hash && (
+                                    <HStack
+                                       as={Link}
+                                       href={
+                                          chain?.id
+                                             ? `${
+                                                  chains[chain.id]?.explorerURL
+                                               }/tx/${t.tx_hash}`
+                                             : '#'
+                                       }
+                                       target="_blank"
+                                       fontSize="sm"
+                                       color="darkgray.100"
+                                    >
+                                       <Box>
+                                          {truncateEthereumAddress(t.tx_hash)}
+                                       </Box>
+                                       <ExternalLink
+                                          size={14}
+                                          color="var(--chakra-colors-darkgray-100)"
+                                       />
+                                    </HStack>
+                                 )}
                               </Box>
-                              <Box>Spent: {t?.pretty_value_quote}</Box>
-                           </Box>
+                           </Flex>
                         ))}
                      </TabPanel>
                   </TabPanels>

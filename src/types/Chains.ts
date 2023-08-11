@@ -6,5 +6,6 @@ export type Chain = {
    name: string
    logo: string
    explorerAPI?: string
-   covalentSlug: string
+   explorerURL?: string
+   covalentSlug?: string
 }

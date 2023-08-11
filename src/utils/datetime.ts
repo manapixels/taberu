@@ -132,6 +132,33 @@ export const getFormattedDate = (inputDate: string) => {
    return `${month} ${day}, ${year}`
 }
 
+export const getFormattedDateTime = (inputDate: string) => {
+   // log(inputDate, isValidISODate(inputDate))
+   // if (!isValidISODate(inputDate)) return
+   const monthNames = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+   ]
+   const dateObj = new Date(inputDate)
+   const month = monthNames[dateObj.getMonth()]
+   const day = String(dateObj.getDate()).padStart(2, '0')
+   const year = dateObj.getFullYear()
+   const hour = dateObj.getHours()
+   const minute = dateObj.getMinutes()
+
+   return `${month} ${day}, ${year} ${hour}:${minute}`
+}
+
 export const getFormattedDateDMYYYY = (inputDate: string) => {
    const dateObj = new Date(inputDate)
 
