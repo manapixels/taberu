@@ -27,6 +27,8 @@ import {
    Tab,
    Tabs,
    TabIndicator,
+   Tooltip,
+   Badge,
 } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import data from '../../dummyStore.json'
@@ -46,7 +48,6 @@ import {
    useNetwork,
    usePrepareContractWrite,
 } from 'wagmi'
-import { contracts } from '@/constants/contracts'
 import useETHBalance from '@/hooks/useETHBalance'
 import { useEffectOnce } from 'react-use'
 import { getEthereumPrice } from '@/services/coingecko-price-2'
@@ -117,10 +118,9 @@ export default function StorePage() {
       watch: true,
    })
 
-   const events = useRecentTransactions(address, contractAddress, chain?.id)
+   const { txns } = useRecentTransactions(address, contractAddress, chain?.id)
 
    console.log('write', contractWriteData)
-   console.log('events', events)
 
    const addItem = (_item: OrderItem) => {
       // if cart is empty
@@ -285,7 +285,14 @@ export default function StorePage() {
                            color="darkgray.100"
                            py={4}
                         >
-                           Past Purchases
+                           <HStack>
+                              <Box>Past Purchases </Box>
+                              {txns && txns.length > 0 && (
+                                 <Badge background="primary.500" color="white" ml={1} fontSize="sm">
+                                    {txns.length}
+                                 </Badge>
+                              )}
+                           </HStack>
                         </Tab>
                      </TabList>
                      <TabIndicator
@@ -432,7 +439,20 @@ export default function StorePage() {
                            </Box>
                         ))}
                      </TabPanel>
-                     <TabPanel>transactions</TabPanel>
+                     <TabPanel>
+                        {txns?.map((t, i) => (
+                           <Box>
+                              <Box>{t?.block_signed_at}</Box>
+                              <Box>
+                                 Spent: {t?.pretty_value_quote} (+{' '}
+                                 <Tooltip label="Transaction fee">
+                                    {t?.pretty_gas_quote}
+                                 </Tooltip>
+                              </Box>
+                              <Box>Spent: {t?.pretty_value_quote}</Box>
+                           </Box>
+                        ))}
+                     </TabPanel>
                   </TabPanels>
                </Container>
             </Tabs>

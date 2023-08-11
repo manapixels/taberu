@@ -11,7 +11,7 @@ export const useContractEvents = (
       let headers = new Headers()
       if (process.env.COVALENT_API_KEY && contractAddress && chainId) {
 
-         headers.set('Authorization', process.env.COVALENT_API_KEY)
+         headers.set('Authorization', `Bearer ${process.env.COVALENT_API_KEY}`)
 
          const chainSlug = chains[chainId]?.covalentSlug
          console.log('headers', headers)
