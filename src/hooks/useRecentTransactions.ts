@@ -22,23 +22,13 @@ export const useRecentTransactions = (
          )
             .then((resp) => resp.json())
             .then((data) => {
-               // console.log(
-               //    'txns',
-               //    data?.data?.items,
-               //    process.env.BASE_GOERLI_LOYALTYPROGRAM_STARBUCKS,
-               //    data?.data?.items.filter(
-               //       (i: any) =>
-               //          i?.log_events?.length > 0 &&
-               //          i?.to_address ===
-               //             process.env.BASE_GOERLI_LOYALTYPROGRAM_STARBUCKS?.toLowerCase()
-               //    )
-               // )
                setTxns(
                   data?.data?.items.filter(
                      (i: any) =>
                         i?.log_events?.length > 0 &&
                         i?.to_address ===
-                           process.env.BASE_GOERLI_LOYALTYPROGRAM_STARBUCKS?.toLowerCase()
+                           (chainId &&
+                              chains?.[chainId]?.loyaltyContract?.toLowerCase())
                   )
                )
             })
@@ -51,6 +41,6 @@ export const useRecentTransactions = (
 
    return {
       txns,
-      fetchTxns
+      fetchTxns,
    }
 }

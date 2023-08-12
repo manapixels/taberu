@@ -49,6 +49,7 @@ import {
    useContractWrite,
    useNetwork,
    usePrepareContractWrite,
+   useWaitForTransaction,
 } from 'wagmi'
 import useETHBalance from '@/hooks/useETHBalance'
 import { useEffectOnce } from 'react-use'
@@ -61,7 +62,7 @@ import LoyaltyCard from '@/components/LoyaltyCard/LoyaltyCard'
 import { useRecentTransactions } from '@/hooks/useRecentTransactions'
 import { getFormattedDate, getFormattedDateTime } from '@/utils/datetime'
 import { truncateEthereumAddress } from '@/utils/address'
-const contractAddress = process.env.BASE_GOERLI_LOYALTYPROGRAM_STARBUCKS
+
 
 export default function StorePage() {
    const router = useRouter()
@@ -95,7 +96,9 @@ export default function StorePage() {
       getCurrencyPrice()
    })
 
-   const { config } = usePrepareContractWrite({
+   const contractAddress = chain?.id ? chains?.[chain.id]?.loyaltyContract : undefined
+
+   const { config} = usePrepareContractWrite({
       address: contractAddress as `0x${string}`,
       abi: contractABI,
       functionName: 'payWithETH',
@@ -103,17 +106,12 @@ export default function StorePage() {
          currencyValue > 0 && {
             value: parseEther((totalToPay / currencyValue).toString()),
          }),
-      enabled: false,
    })
 
-   const { txns, fetchTxns } = useRecentTransactions(
-      address,
-      contractAddress,
-      chain?.id
-   )
+   const { data: contractWriteResponse, write, error } = useContractWrite(config)
 
-   const { isLoading, write, error } = useContractWrite({
-      ...config,
+   const { isLoading } = useWaitForTransaction({
+      hash: contractWriteResponse?.hash,
       onSuccess(data) {
          onClose()
          fetchTxns()
@@ -126,6 +124,12 @@ export default function StorePage() {
          setCart({})
       },
    })
+
+   const { txns, fetchTxns } = useRecentTransactions(
+      address,
+      contractAddress,
+      chain?.id
+   )
 
    const addItem = (_item: OrderItem) => {
       // if cart is empty
@@ -736,6 +740,7 @@ export default function StorePage() {
                         size="lg"
                         width="100%"
                         onClick={() => write?.()}
+                        disabled={!write || isLoading}
                         isLoading={isLoading}
                         loadingText="Paying..."
                      >

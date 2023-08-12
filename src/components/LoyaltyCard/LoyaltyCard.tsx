@@ -14,18 +14,20 @@ import {
    useContractWrite,
    useEnsAvatar,
    useEnsName,
+   useNetwork,
    usePrepareContractWrite,
+   useWaitForTransaction,
 } from 'wagmi'
 import * as blockies from 'blockies-ts'
 import { useEffect, useState } from 'react'
 import { truncateEthereumAddress } from '@/utils/address'
 import pattern from '@/images/pattern.png'
 import contractABI from '@/contracts/abi/LoyaltyProgram.json'
-const contractAddress = process.env.BASE_GOERLI_LOYALTYPROGRAM_STARBUCKS
 
 import { Oxanium } from 'next/font/google'
 import { AbiItem } from 'viem'
 import ClientOnly from '@/components/ClientOnly'
+import { chains } from '@/constants/chains'
 
 const abril = Oxanium({ weight: ['400'], subsets: ['latin-ext'] })
 
@@ -33,6 +35,7 @@ const LoyaltyCard = () => {
    const { address, isConnecting, isDisconnected } = useAccount()
    const [blockie, setBlockie] = useState<string>()
    const toast = useToast()
+   const { chain } = useNetwork()
 
    useEffect(() => {
       if (address) {
@@ -56,6 +59,8 @@ const LoyaltyCard = () => {
       name: ensName,
       chainId: 1,
    })
+
+   const contractAddress = chain?.id ? chains?.[chain.id]?.loyaltyContract : undefined
 
    const {
       data: chainData,
@@ -89,10 +94,11 @@ const LoyaltyCard = () => {
       abi: contractABI,
       functionName: 'redeemPoints',
       args: [chainData?.[0]?.result || 0],
-      enabled: false
    })
-   const { isLoading, write, error } = useContractWrite({
-      ...config,
+   const { data: contractWriteResponse, write, error } = useContractWrite(config)
+
+   const { isLoading } = useWaitForTransaction({
+      hash: contractWriteResponse?.hash,
       onSuccess(data) {
          console.log('Success', data)
          toast({
@@ -200,6 +206,7 @@ const LoyaltyCard = () => {
                         size="xs"
                         variant="black"
                         onClick={() => write?.()}
+                        disabled={!write || isLoading}
                         isLoading={isLoading}
                         loadingText="Redeeming..."
                      >

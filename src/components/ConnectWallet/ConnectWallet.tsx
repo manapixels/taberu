@@ -135,10 +135,9 @@ export default function Index() {
                      variant="black"
                      size="sm"
                   >
-                     Connect wallet
                      {isLoading &&
-                        pendingConnector?.id === connector.id &&
-                        'Connecting'}
+                        pendingConnector?.id === connector.id ?
+                        'Connecting' : 'Connect wallet'}
                   </Button>
                ))}
             {error && <div>{error.message}</div>}
