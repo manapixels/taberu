@@ -1,3 +1,5 @@
+'use client'
+
 import { truncateEthereumAddress } from '@/utils/address'
 import {
    Box,
@@ -22,6 +24,7 @@ import * as blockies from 'blockies-ts'
 import Image from 'next/image'
 import { chains as chainList } from '@/constants/chains'
 import { ChevronDown } from 'react-feather'
+import ClientOnly from '@/components/ClientOnly'
 
 export default function Index() {
    const { address, isConnected } = useAccount()
@@ -59,76 +62,86 @@ export default function Index() {
 
    return (
       <HStack>
-         {_isConnected && chain && (
-            <Menu>
-               <MenuButton
-                  as={Button}
-                  size="sm"
-                  rightIcon={<ChevronDown size={12} />}
-               >
-                  <Box>
-                     <Image
-                        src={chainList[chain?.id]?.logo}
-                        alt=""
-                        width={20}
-                        height={20}
-                     />
-                  </Box>
-               </MenuButton>
-
-               <MenuList>
-                  {Object.entries(chainList).map(([key, value], index) => (
-                     <MenuItem
-                        minH="48px"
-                        key={`chain-${value?.name}`}
-                        onClick={() => key && switchNetwork?.(parseInt(key))}
-                        background={chain?.id === parseInt(key) ? 'var(--chakra-colors-gray-200)' : 'unset'}
-                        _hover={{ background: "var(--chakra-colors-gray-200)" }}
-                     >
+         <ClientOnly>
+            {_isConnected && chain && (
+               <Menu>
+                  <MenuButton
+                     as={Button}
+                     size="sm"
+                     rightIcon={<ChevronDown size={12} />}
+                  >
+                     <Box>
                         <Image
-                           src={value?.logo}
+                           src={chainList[chain?.id]?.logo}
                            alt=""
                            width={20}
                            height={20}
                         />
-                        <Box ml={2}>{value?.name}</Box>
-                     </MenuItem>
-                  ))}
-               </MenuList>
-            </Menu>
-         )}
-         {_isConnected && (
-            <Button onClick={() => disconnect()} variant="black" size="sm">
-               {blockie && (
-                  <Box mr={1.5}>
-                     <Image
-                        src={blockie}
-                        alt=""
-                        width={20}
-                        height={20}
-                        style={{ borderRadius: '.2rem' }}
-                     />
-                  </Box>
-               )}
-               {ensName ? ensName : (address && truncateEthereumAddress(address))}
-            </Button>
-         )}
-         {!_isConnected &&
-            _connectors.map((connector) => (
-               <Button
-                  disabled={!connector.ready}
-                  key={connector.id}
-                  onClick={() => connect({ connector })}
-                  variant="black"
-                  size="sm"
-               >
-                  Connect wallet
-                  {isLoading &&
-                     pendingConnector?.id === connector.id &&
-                     'Connecting'}
+                     </Box>
+                  </MenuButton>
+
+                  <MenuList>
+                     {Object.entries(chainList).map(([key, value], index) => (
+                        <MenuItem
+                           minH="48px"
+                           key={`chain-${value?.name}`}
+                           onClick={() => key && switchNetwork?.(parseInt(key))}
+                           background={
+                              chain?.id === parseInt(key)
+                                 ? 'var(--chakra-colors-gray-200)'
+                                 : 'unset'
+                           }
+                           _hover={{
+                              background: 'var(--chakra-colors-gray-200)',
+                           }}
+                        >
+                           <Image
+                              src={value?.logo}
+                              alt=""
+                              width={20}
+                              height={20}
+                           />
+                           <Box ml={2}>{value?.name}</Box>
+                        </MenuItem>
+                     ))}
+                  </MenuList>
+               </Menu>
+            )}
+            {_isConnected && (
+               <Button onClick={() => disconnect()} variant="black" size="sm">
+                  {blockie && (
+                     <Box mr={1.5}>
+                        <Image
+                           src={blockie}
+                           alt=""
+                           width={20}
+                           height={20}
+                           style={{ borderRadius: '.2rem' }}
+                        />
+                     </Box>
+                  )}
+                  {ensName
+                     ? ensName
+                     : address && truncateEthereumAddress(address)}
                </Button>
-            ))}
-         {error && <div>{error.message}</div>}
+            )}
+            {!_isConnected &&
+               _connectors.map((connector) => (
+                  <Button
+                     disabled={!connector.ready}
+                     key={connector.id}
+                     onClick={() => connect({ connector })}
+                     variant="black"
+                     size="sm"
+                  >
+                     Connect wallet
+                     {isLoading &&
+                        pendingConnector?.id === connector.id &&
+                        'Connecting'}
+                  </Button>
+               ))}
+            {error && <div>{error.message}</div>}
+         </ClientOnly>
       </HStack>
    )
 }
