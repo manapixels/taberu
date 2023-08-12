@@ -492,6 +492,7 @@ export default function StorePage() {
                            mb={4}
                            borderWidth={1}
                            borderColor="lightgray.400"
+                           key={t?.tx_hash}
                         >
                            <Flex
                               px={8}

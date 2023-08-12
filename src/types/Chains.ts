@@ -8,4 +8,5 @@ export type Chain = {
    explorerAPI?: string
    explorerURL?: string
    covalentSlug?: string
+   loyaltyContract?: string
 }
