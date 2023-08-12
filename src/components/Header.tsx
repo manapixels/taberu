@@ -68,7 +68,7 @@ const Sidebar = () => {
       <Box
          pos="sticky"
          top={0}
-         zIndex="docked"
+         zIndex="sticky"
          background="white"
          // px={{ base: 4, md: 8 }}
          py={{ base: 2, md: 2 }}

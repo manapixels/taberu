@@ -1,9 +1,6 @@
 import { chains } from '@/constants/chains'
 import { CovalentTransaction } from '@/types/covalent/Transaction'
 import { useEffect, useState } from 'react'
-import { useContractEvent } from 'wagmi'
-
-import contractABI from '@/contracts/abi/LoyaltyProgram.json'
 
 export const useRecentTransactions = (
    userAddress: string | undefined,
@@ -11,23 +8,10 @@ export const useRecentTransactions = (
    chainId: number | undefined
 ) => {
    const [txns, setTxns] = useState<CovalentTransaction[]>()
-   const [toUpdate, setToUpdate] = useState<number>(1)
 
-   useContractEvent({
-      address: contractAddress as `0x${string}`,
-      abi: contractABI,
-      eventName: 'payWithETH',
-      listener(log) {
-         // fetch updated data from Covalent whenever there are new events
-         console.log('newContractEvent', log)
-         setToUpdate(toUpdate + 1)
-      },
-   })
-
-   useEffect(() => {
-      let headers = new Headers()
+   const fetchTxns = () => {
       if (process.env.COVALENT_API_KEY && contractAddress && chainId) {
-
+         let headers = new Headers()
          headers.set('Authorization', `Bearer ${process.env.COVALENT_API_KEY}`)
 
          const chainSlug = chains[chainId]?.covalentSlug
@@ -59,9 +43,14 @@ export const useRecentTransactions = (
                )
             })
       }
-   }, [toUpdate])
+   }
+
+   useEffect(() => {
+      fetchTxns()
+   }, [])
 
    return {
       txns,
+      fetchTxns
    }
 }

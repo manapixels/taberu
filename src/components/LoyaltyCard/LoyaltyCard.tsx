@@ -1,5 +1,21 @@
-import { Avatar, Box, Button, Flex, HStack, Text, useToast } from '@chakra-ui/react'
-import { useAccount, useContractRead, useContractReads, useContractWrite, useEnsAvatar, useEnsName, usePrepareContractWrite } from 'wagmi'
+import {
+   Avatar,
+   Box,
+   Button,
+   Flex,
+   HStack,
+   Text,
+   useToast,
+} from '@chakra-ui/react'
+import {
+   useAccount,
+   useContractRead,
+   useContractReads,
+   useContractWrite,
+   useEnsAvatar,
+   useEnsName,
+   usePrepareContractWrite,
+} from 'wagmi'
 import * as blockies from 'blockies-ts'
 import { useEffect, useState } from 'react'
 import { truncateEthereumAddress } from '@/utils/address'
@@ -64,13 +80,19 @@ const LoyaltyCard = () => {
    })
 
    const points = chainData?.[0]?.result ? Number(chainData[0].result) : 0
-   const redeemableValue = chainData?.[1]?.result ? Number(chainData[1].result)/Math.pow(10, 18) * points : 0
+   const redeemableValue = chainData?.[1]?.result
+      ? (Number(chainData[1].result) / Math.pow(10, 18)) * points
+      : 0
 
    const { config } = usePrepareContractWrite({
       address: contractAddress as `0x${string}`,
       abi: contractABI,
       functionName: 'redeemPoints',
-      args: [],
+      args: [chainData?.[0]?.result || 0],
+      enabled: false
+   })
+   const { isLoading, write, error } = useContractWrite({
+      ...config,
       onSuccess(data) {
          console.log('Success', data)
          toast({
@@ -81,11 +103,6 @@ const LoyaltyCard = () => {
          })
       },
    })
-   const {
-      isLoading,
-      write,
-      error,
-   } = useContractWrite(config)
 
    return (
       <ClientOnly>
@@ -165,7 +182,7 @@ const LoyaltyCard = () => {
                   </Box>
                </HStack>
                <Box alignSelf="flex-end">
-                  <HStack>
+                  <HStack justifyContent="flex-end">
                      <Box letterSpacing={1} textTransform="uppercase">
                         Points
                      </Box>
@@ -179,7 +196,13 @@ const LoyaltyCard = () => {
                      </Box>
                   </HStack>
                   {redeemableValue > 0 && (
-                     <Button size="xs" variant="black">
+                     <Button
+                        size="xs"
+                        variant="black"
+                        onClick={() => write?.()}
+                        isLoading={isLoading}
+                        loadingText="Redeeming..."
+                     >
                         Redeem {redeemableValue} ETH
                      </Button>
                   )}

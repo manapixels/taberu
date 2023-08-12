@@ -69,6 +69,7 @@ export default function Index() {
                      as={Button}
                      size="sm"
                      rightIcon={<ChevronDown size={12} />}
+                     mr={3}
                   >
                      <Box>
                         <Image

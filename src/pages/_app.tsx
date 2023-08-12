@@ -1,12 +1,10 @@
 import type { AppProps } from 'next/app'
-import { Inter } from 'next/font/google'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import {
    ChakraProvider,
    extendTheme,
    Input,
    withDefaultColorScheme,
-   Flex,
    Box,
 } from '@chakra-ui/react'
 import { WagmiConfig, configureChains, createConfig } from 'wagmi'
@@ -175,17 +173,14 @@ export default function App({ Component, pageProps }: AppProps) {
                         content="width=device-width, initial-scale=1"
                      />
                   </Head>
-                  <Box background="lightgray.100">
+                  <Box
+                     background="lightgray.100"
+                     className="custom-scrollbar"
+                     flex="1"
+                     pos="relative"
+                  >
                      <Header />
-                     <Box
-                        mt={{ base: 24, md: 0 }}
-                        overflow="auto"
-                        background="lightgray.100"
-                        className="custom-scrollbar"
-                        flex="1"
-                     >
-                        <Component {...pageProps} />
-                     </Box>
+                     <Component {...pageProps} />
                   </Box>
                </QueryClientProvider>
             </AccountsContextProvider>
